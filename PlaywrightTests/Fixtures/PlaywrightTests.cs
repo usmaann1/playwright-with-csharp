@@ -1,0 +1,60 @@
+using Microsoft.Playwright;
+using NUnit.Framework;
+using PlaywrightTests.Pages.Dashboard;
+using PlaywrightTests.Pages.Login;
+using PlaywrightTests.Pages.Projects;
+
+namespace PlaywrightTests
+{
+    [TestFixture]
+    public class TestFixture
+    {
+        private IPage? page;
+        private IBrowserContext? context;
+        private LoginPage? loginPage;
+        private DashboardPage? dashboardPage;
+        private ProjectsPage? projectsPage;
+
+        [SetUp]
+        public async Task Setup()
+        {           
+            context = await GlobalSetup.Browser!.NewContextAsync();
+            page = await context.NewPageAsync();
+            loginPage = new(page);
+            dashboardPage = new(page);
+            projectsPage = new(page);
+            await page!.GotoAsync(AppConfig.AppUrl!);
+            await loginPage!.Login(AppConfig.Email!, AppConfig.Password!);
+
+        }
+
+        [Test]
+        public async Task VerifyFileUpload()
+        {
+            await dashboardPage!.ClickImportProjectArchieve();
+            await projectsPage!.UploadProjectFile("\\TestFiles\\MultiplePolygonPoints.kmz");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.SelectTechnology("WiFi");
+            await projectsPage!.SelectVendor("Aruba");
+            await projectsPage!.SelectModel("A574");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.VerifyProjectBuilding();
+            await projectsPage!.ClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
+            await projectsPage!.VerifyProjectNameAfterOpening("MultiplePolygonPoints");
+            
+        }
+
+        [TearDown]
+        public async Task TearDown()
+        {
+            if (page != null)
+            {
+                await page.CloseAsync();
+            }
+            if (context != null)
+            {
+                await context.CloseAsync();
+            }
+        }
+    }
+}
