@@ -23,7 +23,10 @@ namespace PlaywrightTests
             loginPage = new(page);
             dashboardPage = new(page);
             projectsPage = new(page);
-            await page!.GotoAsync(AppConfig.AppUrl!);
+            await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
+            {
+                Timeout = 50000 
+            });            
             await loginPage!.Login(AppConfig.Email!, AppConfig.Password!);
 
         }
@@ -41,6 +44,14 @@ namespace PlaywrightTests
             await projectsPage!.VerifyProjectBuilding();
             await projectsPage!.ClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
             await projectsPage!.VerifyProjectNameAfterOpening("MultiplePolygonPoints");
+            await projectsPage!.ClickHardwareButton();
+            await projectsPage!.ClickAddAnApButton();
+            await projectsPage!.SelectApType("Outdoor");
+            await projectsPage!.SelectApVendor("Aruba");
+            await projectsPage!.ClickAddApButton();
+            await projectsPage!.DragAndDropAp(100, 100);
+            await projectsPage!.VerifyWifiIconOnMap("1");
+            
             
         }
 
