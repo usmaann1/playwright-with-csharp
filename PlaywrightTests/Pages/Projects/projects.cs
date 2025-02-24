@@ -1,6 +1,7 @@
 using Microsoft.Playwright;
 using NUnit.Framework;
 using PlaywrightTests.Helpers;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace PlaywrightTests.Pages.Projects
@@ -109,7 +110,7 @@ namespace PlaywrightTests.Pages.Projects
 
           public async Task VerifyWifiIconOnMap(string index)
         {
-            var wifiIconDynamicLocator = _wifiIcon.Replace("i", index);
+            var wifiIconDynamicLocator = Regex.Replace(_wifiIcon, @"\[\s*i\s*\]", $"[{index}]");
             var element = page.Locator(wifiIconDynamicLocator);
             await Assertions.Expect(element).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 50000 });        
         }
