@@ -10,6 +10,11 @@ namespace PlaywrightTests.Helpers
             var element = page.Locator(locator);
             try
             {
+                await element.HoverAsync(new LocatorHoverOptions
+                {
+                    Timeout = timeout
+                });
+                
                 await element.ClickAsync(new LocatorClickOptions
                 {
                     Timeout = timeout

@@ -30,6 +30,10 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _apTypeDropdown = "(//div[@role='combobox'])[2]";
         private readonly string _apVendorDropdown = "(//div[@role='combobox'])[3]"; 
         private readonly string _wifiIcon = "(//div[@class='PinLabels-Label PinLabels-Label_color_dark'])[i]";
+        private readonly string _appIcon = "(//*[@fill='none'])[1]";
+        private readonly string _projectMenu = "(//button[@data-cy='project-card-menu'])[1]";
+        private readonly string _projectDeleteButton = "(//button[@data-cy='project-card-menu'])[1]";
+        private readonly string _projectDeleteConfirmButton = "//button[text() = 'Yes, delete']";
 
 
         public async Task ClickNextButton()
@@ -92,8 +96,9 @@ namespace PlaywrightTests.Pages.Projects
 
             await page.Mouse.MoveAsync(targetX - x, targetY - y); 
             await page.Mouse.DownAsync();
-            await page.Mouse.MoveAsync(targetX, targetY); 
             await page.Mouse.UpAsync(); 
+            // await page.Mouse.MoveAsync(targetX, targetY); 
+            // await page.Mouse.UpAsync(); 
             
         }
 
@@ -165,6 +170,34 @@ namespace PlaywrightTests.Pages.Projects
         {
             await Helper.Fill(_page, _totalPowerTextBox, totalPower);
         }
+
+        public async Task ClickAppIcon()
+        {
+            await Helper.Click(_page, _appIcon);
+        }
+
+        public async Task ClickProjectMenu()
+        {
+            await Helper.Click(_page, _projectMenu);
+        }
+
+        public async Task ClickProjectDelete()
+        {
+            await Helper.Click(_page, _projectDeleteButton);
+        }
+
+        public async Task ClickConfirmDelete()
+        {
+            await Helper.Click(_page, _projectDeleteConfirmButton);
+        }
+
+         public async Task MouseOverClickCreatedProject(string projectName)
+        {
+            var projectNameLocator = _projectName.Replace("name", projectName);
+            var element = page.Locator(projectNameLocator);
+            await element.HoverAsync();
+        }
+
 
     }
 

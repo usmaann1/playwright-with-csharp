@@ -49,17 +49,28 @@ namespace PlaywrightTests
             await projectsPage!.SelectApType("Outdoor");
             await projectsPage!.SelectApVendor("Aruba");
             await projectsPage!.ClickAddApButton();
-            await projectsPage!.DragAndDropAp(100, 100);
+            await projectsPage!.DragAndDropAp(120, 120);
             await projectsPage!.VerifyWifiIconOnMap("1");
 
+            await projectsPage!.ClickIdfTab();
+            await projectsPage!.ClickAddAnIdfButton();
             await projectsPage!.EnterSwitchName("Test");
             await projectsPage!.ClickSwitchButton();
             await projectsPage!.EnterIdfName("sample");
             await projectsPage!.EnterNumberOfPorts("12");
             await projectsPage!.EnterTotalPower("12");
             await projectsPage!.ClickAddIdfButton();
-            await projectsPage!.DragAndDropAp(150, 150);
+            await projectsPage!.DragAndDropAp(180, 180);
             await projectsPage!.VerifyWifiIconOnMap("2");
+
+            //project delete implementation pending 
+            
+            // await projectsPage!.ClickAppIcon();
+            // await projectsPage!.MouseOverClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
+            // await projectsPage!.ClickProjectMenu();
+            // await projectsPage!.ClickProjectDelete();
+            // await projectsPage!.ClickConfirmDelete();
+
 
 
 
