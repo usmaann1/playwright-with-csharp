@@ -15,7 +15,7 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _vendorDropdown = "(//div[@role='combobox'])[2]"; 
         private readonly string _modelDropdown = "(//div[@role='combobox'])[3]"; 
         private readonly string _projectBuildingTextLocator = "(//section[@data-cy='project-card-MultiplePolygonPoints.kmz']//footer/div/div)[1]";
-        private readonly string _projectName = "//section[@data-cy='name']";
+        private readonly string _projectName = "//section[@data-cy='name']/div";
         private readonly string _addApButton = "//button[contains(text(),'Add AP')]";
         private readonly string _hardwareButton = "//button[@value='hardware']";
         private readonly string _addAnApButton = "//button[contains(text(),'Add an AP')]";
@@ -86,7 +86,7 @@ namespace PlaywrightTests.Pages.Projects
             await _page.WaitForTimeoutAsync(10000);
         }
 
-        public async Task DragAndDropAp(float x, float y)
+        public async Task DragAndDrop(float x, float y)
         {
             var canvas = page.Locator("canvas");
 
@@ -122,7 +122,7 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.SelectFromDropDown(_page, _apVendorDropdown, vendor);
         }
 
-          public async Task VerifyWifiIconOnMap(string index)
+          public async Task VerifyIconOnMap(string index)
         {
             var wifiIconDynamicLocator = Regex.Replace(_wifiIcon, @"\[\s*i\s*\]", $"[{index}]");
             var element = page.Locator(wifiIconDynamicLocator);
