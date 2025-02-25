@@ -51,6 +51,21 @@ namespace PlaywrightTests
             await projectsPage!.ClickAddApButton();
             await projectsPage!.DragAndDropAp(100, 100);
             await projectsPage!.VerifyWifiIconOnMap("1");
+
+            await projectsPage!.EnterSwitchName("Test");
+            await projectsPage!.ClickSwitchButton();
+            await projectsPage!.EnterIdfName("sample");
+            await projectsPage!.EnterNumberOfPorts("12");
+            await projectsPage!.EnterTotalPower("12");
+            await projectsPage!.ClickAddIdfButton();
+            await projectsPage!.DragAndDropAp(150, 150);
+            await projectsPage!.VerifyWifiIconOnMap("2");
+
+
+
+
+
+
             
             
         }

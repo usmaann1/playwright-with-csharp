@@ -19,6 +19,14 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _addApButton = "//button[contains(text(),'Add AP')]";
         private readonly string _hardwareButton = "//button[@value='hardware']";
         private readonly string _addAnApButton = "//button[contains(text(),'Add an AP')]";
+        private readonly string _idfTab = "//button[contains(text(),'IDF')]";
+        private readonly string _addAnIdfButton = "//button[contains(text(),'Add an IDF')]";
+        private readonly string _switchNameTextBox = "//input[@id='name']";
+        private readonly string _idfNameTextBox = "//input[@id='name-0']";
+        private readonly string _noOfPortsTextBox = "//input[@id='numberOfPorts-0']";
+        private readonly string _totalPowerTextBox = "//input[@id='totalPowerOutputW-0']";
+        private readonly string _switchButton = "//button[contains(text(),'Switch')]";
+        private readonly string _addIDFButton = "//button[contains(text(),'Add IDF')]";
         private readonly string _apTypeDropdown = "(//div[@role='combobox'])[2]";
         private readonly string _apVendorDropdown = "(//div[@role='combobox'])[3]"; 
         private readonly string _wifiIcon = "(//div[@class='PinLabels-Label PinLabels-Label_color_dark'])[i]";
@@ -71,6 +79,7 @@ namespace PlaywrightTests.Pages.Projects
         public async Task ClickAddApButton()
         {
             await Helper.Click(_page, _addApButton);
+            await _page.WaitForTimeoutAsync(10000);
         }
 
         public async Task DragAndDropAp(float x, float y)
@@ -114,7 +123,50 @@ namespace PlaywrightTests.Pages.Projects
             var element = page.Locator(wifiIconDynamicLocator);
             await Assertions.Expect(element).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 50000 });        
         }
+
+        public async Task ClickIdfTab()
+        {
+            await Helper.Click(_page, _idfTab);
         }
+
+        public async Task ClickAddAnIdfButton()
+        {
+            await Helper.Click(_page, _addAnIdfButton);
+        }
+
+        public async Task ClickSwitchButton()
+        {
+            await Helper.Click(_page, _switchButton);
+        }
+
+        public async Task ClickAddIdfButton()
+        {
+            await Helper.Click(_page, _addIDFButton);
+            await _page.WaitForTimeoutAsync(10000);
+
+        }
+
+        public async Task EnterSwitchName(string switchName)
+        {
+            await Helper.Fill(_page, _switchNameTextBox, switchName);
+        }
+
+        public async Task EnterIdfName(string idfName)
+        {
+            await Helper.Fill(_page, _idfNameTextBox, idfName);
+        }
+
+        public async Task EnterNumberOfPorts(string numberOfPorts)
+        {
+            await Helper.Fill(_page, _noOfPortsTextBox, numberOfPorts);
+        }
+
+        public async Task EnterTotalPower(string totalPower)
+        {
+            await Helper.Fill(_page, _totalPowerTextBox, totalPower);
+        }
+
+    }
 
 
 
