@@ -65,11 +65,11 @@ namespace PlaywrightTests
 
             //project delete implementation pending 
 
-            // await projectsPage!.ClickAppIcon();
-            // await projectsPage!.MouseOverClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
-            // await projectsPage!.ClickProjectMenu();
-            // await projectsPage!.ClickProjectDelete();
-            // await projectsPage!.ClickConfirmDelete();
+            await projectsPage!.ClickAppIcon();
+            await projectsPage!.MouseOverClickCreatedProject();
+            await projectsPage!.ClickProjectMenu();
+            await projectsPage!.ClickProjectDelete();
+            await projectsPage!.ClickConfirmDelete();
 
 
 

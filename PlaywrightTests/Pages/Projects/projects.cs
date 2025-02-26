@@ -30,11 +30,11 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _apTypeDropdown = "(//div[@role='combobox'])[2]";
         private readonly string _apVendorDropdown = "(//div[@role='combobox'])[3]"; 
         private readonly string _wifiIcon = "(//div[@class='PinLabels-Label PinLabels-Label_color_dark'])[i]";
-        private readonly string _appIcon = "(//*[@fill='none'])[1]";
-        private readonly string _projectMenu = "(//button[@data-cy='project-card-menu'])[1]";
-        private readonly string _projectDeleteButton = "(//button[@data-cy='project-card-menu'])[1]";
+        private readonly string _appIcon = "//a[@href='/']";
+        private readonly string _projectMenu = "//section[contains(@data-cy, 'project-card-MultiplePolygonPoints')]//div[contains(@class, 'Card-Actions')]/div";
+        private readonly string _projectDeleteButton = "(//li[@data-cy='project-card-menu-delete'])[1]";
         private readonly string _projectDeleteConfirmButton = "//button[text() = 'Yes, delete']";
-
+        private readonly string _projectHoverLocator = "//section[contains(@data-cy, 'project-card-MultiplePolygonPoints')]//h3";
 
         public async Task ClickNextButton()
         {
@@ -178,12 +178,18 @@ namespace PlaywrightTests.Pages.Projects
 
         public async Task ClickProjectMenu()
         {
-            await Helper.Click(_page, _projectMenu);
+            var element = page.Locator(_projectMenu);
+            await element.HoverAsync();
+            await Task.Delay(3000);
+            await element.ClickAsync(new() { Force = true });
         }
 
         public async Task ClickProjectDelete()
         {
-            await Helper.Click(_page, _projectDeleteButton);
+            var element = page.Locator(_projectDeleteButton);
+            await element.HoverAsync();
+            await Task.Delay(3000);
+            await element.ClickAsync(new() { Force = true });
         }
 
         public async Task ClickConfirmDelete()
@@ -191,11 +197,11 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.Click(_page, _projectDeleteConfirmButton);
         }
 
-         public async Task MouseOverClickCreatedProject(string projectName)
+         public async Task MouseOverClickCreatedProject()
         {
-            var projectNameLocator = _projectName.Replace("name", projectName);
-            var element = page.Locator(projectNameLocator);
+            var element = page.Locator(_projectHoverLocator);
             await element.HoverAsync();
+            await Task.Delay(3000);
         }
 
 
