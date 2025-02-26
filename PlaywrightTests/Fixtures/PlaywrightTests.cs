@@ -54,15 +54,15 @@ namespace PlaywrightTests
 
             await projectsPage!.ClickIdfTab();
             await projectsPage!.ClickAddAnIdfButton();
-            await projectsPage!.EnterSwitchName("Test");
+            await projectsPage!.EnterSwitchName("IDF1");
             await projectsPage!.ClickSwitchButton();
-            await projectsPage!.EnterIdfName("sample");
-            await projectsPage!.EnterNumberOfPorts("12");
-            await projectsPage!.EnterTotalPower("12");
+            await projectsPage!.EnterIdfName("Switch1");
+            await projectsPage!.EnterNumberOfPorts("2");
+            await projectsPage!.EnterTotalPower("100");
             await projectsPage!.ClickAddIdfButton();
-            await projectsPage!.DragAndDrop(180, 180);
+            await projectsPage!.DragAndDrop(120, 190);
             await projectsPage!.VerifyIconOnMap("2");
-
+            await Task.Delay(2000);
             //project delete implementation pending 
 
             await projectsPage!.ClickAppIcon();
