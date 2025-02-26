@@ -35,6 +35,9 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _projectDeleteButton = "(//li[@data-cy='project-card-menu-delete'])[1]";
         private readonly string _projectDeleteConfirmButton = "//button[text() = 'Yes, delete']";
         private readonly string _projectHoverLocator = "//section[contains(@data-cy, 'project-card-MultiplePolygonPoints')]//h3";
+        private readonly string _usedPortsLocator = "//input[@id='portsUsed-0']"; 
+        private readonly string _freePortsLocator = "//input[@id='freePorts-0']";
+        private readonly string _selectButtonLocator = "//button[@value = 'select']";
 
         public async Task ClickNextButton()
         {
@@ -122,7 +125,7 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.SelectFromDropDown(_page, _apVendorDropdown, vendor);
         }
 
-          public async Task VerifyIconOnMap(string index)
+        public async Task VerifyIconOnMap(string index)
         {
             var wifiIconDynamicLocator = Regex.Replace(_wifiIcon, @"\[\s*i\s*\]", $"[{index}]");
             var element = page.Locator(wifiIconDynamicLocator);
@@ -176,6 +179,11 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.Click(_page, _appIcon);
         }
 
+        public async Task ClickSelectButton()
+        {
+            await Helper.Click(_page, _selectButtonLocator);
+        }
+
         public async Task ClickProjectMenu()
         {
             var element = page.Locator(_projectMenu);
@@ -203,6 +211,35 @@ namespace PlaywrightTests.Pages.Projects
             await element.HoverAsync();
             await Task.Delay(3000);
         }
+
+        public async Task ClickDroppedIconOnMap(string index)
+        {
+            var dynamicLocator = Regex.Replace(_wifiIcon, @"\[\s*i\s*\]", $"[{index}]");
+            var element = page.Locator(dynamicLocator);
+            // await element.HoverAsync();
+            // await Task.Delay(3000);
+            // await element.ClickAsync(new() { Force = true });
+
+            await element.ClickAsync(new LocatorClickOptions { Force = true });
+            await element.ClickAsync(new LocatorClickOptions { Position = new Position { X = 5, Y = 5 } });
+        }
+
+        public async Task AssertUsedPortsValue(string expectedValue)
+        {
+            var usedPortsElement = page.Locator(_usedPortsLocator);
+            string? actualValue = await usedPortsElement.GetAttributeAsync("value");
+            Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), $"Expected value '{expectedValue}' but found '{actualValue}'.");
+        }
+
+        public async Task AssertFreePortsValue(string expectedValue)
+        {
+            var usedPortsElement = page.Locator(_freePortsLocator);
+            string? actualValue = await usedPortsElement.GetAttributeAsync("value");
+            Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), $"Expected value '{expectedValue}' but found '{actualValue}'.");
+        }
+
+
+
 
 
     }

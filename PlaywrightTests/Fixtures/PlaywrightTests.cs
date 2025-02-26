@@ -45,6 +45,8 @@ namespace PlaywrightTests
             await projectsPage!.ClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
             await projectsPage!.VerifyProjectNameAfterOpening("MultiplePolygonPoints");
             await projectsPage!.ClickHardwareButton();
+
+            //drag and drop AP
             await projectsPage!.ClickAddAnApButton();
             await projectsPage!.SelectApType("Outdoor");
             await projectsPage!.SelectApVendor("Aruba");
@@ -52,6 +54,7 @@ namespace PlaywrightTests
             await projectsPage!.DragAndDrop(120, 120);
             await projectsPage!.VerifyIconOnMap("1");
 
+            //drag and drop Idf
             await projectsPage!.ClickIdfTab();
             await projectsPage!.ClickAddAnIdfButton();
             await projectsPage!.EnterSwitchName("Test");
@@ -63,7 +66,16 @@ namespace PlaywrightTests
             await projectsPage!.DragAndDrop(180, 180);
             await projectsPage!.VerifyIconOnMap("2");
 
-            //project delete implementation pending 
+            //verify Idf ports
+            // await projectsPage!.ClickSelectButton();
+            await projectsPage!.ClickDroppedIconOnMap("2");
+            // await projectsPage!.ClickDroppedIconOnMap("2");
+            // await projectsPage!.ClickDroppedIconOnMap("2");
+
+            await projectsPage!.AssertUsedPortsValue("1");
+            await projectsPage!.AssertFreePortsValue("1");
+
+            //project delete implementation
 
             await projectsPage!.ClickAppIcon();
             await projectsPage!.MouseOverClickCreatedProject();
