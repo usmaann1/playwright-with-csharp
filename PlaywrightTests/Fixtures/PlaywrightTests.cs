@@ -65,14 +65,28 @@ namespace PlaywrightTests
             await projectsPage!.ClickAddIdfButton();
             await projectsPage!.DragAndDrop(120, 190);
             await projectsPage!.VerifyIconOnMap("2");
-            //verify Idf ports
-            // await projectsPage!.ClickSelectButton();
-            await projectsPage!.ClickDroppedIconOnMap("2");
-            // await projectsPage!.ClickDroppedIconOnMap("2");
-            // await projectsPage!.ClickDroppedIconOnMap("2");
 
+            //verify Idf ports
+
+            await projectsPage!.ClickIdfRecordRow("IDF1");
             await projectsPage!.AssertUsedPortsValue("1");
             await projectsPage!.AssertFreePortsValue("1");
+            await projectsPage!.ClickCancelButton();
+
+            await projectsPage!.ClickIdfPlusIcon();
+
+            //drag and drop another Idf
+            await projectsPage!.EnterSwitchName("IDF2");
+            await projectsPage!.ClickSwitchButton();
+            await projectsPage!.EnterIdfName("Switch2");
+            await projectsPage!.EnterNumberOfPorts("2");
+            await projectsPage!.EnterTotalPower("100");
+            await projectsPage!.ClickAddIdfButton();
+            await projectsPage!.DragAndDrop(120, 250);
+
+            await projectsPage!.ClickEyeIcon();
+            await projectsPage!.CLickWiringBytton();
+            await projectsPage!.ClickIdfRecordRow("IDF1");
 
             //project delete implementation
 

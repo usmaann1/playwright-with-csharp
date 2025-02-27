@@ -38,6 +38,11 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _usedPortsLocator = "//input[@id='portsUsed-0']"; 
         private readonly string _freePortsLocator = "//input[@id='freePorts-0']";
         private readonly string _selectButtonLocator = "//button[@value = 'select']";
+        private readonly string _idfRowLocator = "//span[text() = 'txt']";
+        private readonly string _cancelButton = "(//button[text() = 'Cancel'])[1]";
+        private readonly string _idfPlusIcon = "(//button[text() = 'IDF'])[2]";
+        private readonly string _eyeIconMap = "(//button[@variant='clear']//*[@size='16'])[3]";
+        private readonly string _wiringIcon = "(//button[contains(@class,'MuiIconButton-root')])[25]";
 
         public async Task ClickNextButton()
         {
@@ -184,6 +189,11 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.Click(_page, _selectButtonLocator);
         }
 
+        public async Task ClickCancelButton()
+        {
+            await Helper.Click(_page, _cancelButton);
+        }
+
         public async Task ClickProjectMenu()
         {
             var element = page.Locator(_projectMenu);
@@ -237,6 +247,30 @@ namespace PlaywrightTests.Pages.Projects
             string? actualValue = await usedPortsElement.GetAttributeAsync("value");
             Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), $"Expected value '{expectedValue}' but found '{actualValue}'.");
         }
+
+        public async Task ClickIdfRecordRow(string idfName)
+        {
+            var idfNameDyanamicLocator = _idfRowLocator.Replace("txt", idfName);
+            var locator = page.Locator(idfNameDyanamicLocator);
+            await locator.ClickAsync(new() { Force = true });
+        }
+
+        public async Task ClickIdfPlusIcon()
+        {
+            await Helper.Click(_page, _idfPlusIcon);
+        }
+
+        public async Task ClickEyeIcon()
+        {
+            await Helper.Click(_page, _eyeIconMap);
+        }
+
+        public async Task CLickWiringBytton()
+        {
+            await Helper.Click(_page, _wiringIcon);
+        }
+
+
 
 
 
