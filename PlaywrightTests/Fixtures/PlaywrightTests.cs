@@ -84,9 +84,14 @@ namespace PlaywrightTests
             await projectsPage!.ClickAddIdfButton();
             await projectsPage!.DragAndDrop(120, 250);
 
+            
+            await Task.Delay(3000); // Wait for 3 seconds
             await projectsPage!.ClickEyeIcon();
+            await Task.Delay(3000); // Wait for 3 seconds
             await projectsPage!.CLickWiringBytton();
+            await Task.Delay(3000); // Wait for 3 seconds
             await projectsPage!.ClickIdfRecordRow("IDF1");
+            await Task.Delay(3000); // Wait for 3 seconds
 
             //project delete implementation
 
