@@ -43,6 +43,13 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _idfPlusIcon = "(//button[text() = 'IDF'])[2]";
         private readonly string _eyeIconMap = "(//button[@variant='clear']//*[@size='16'])[3]";
         private readonly string _wiringIcon = "(//button[contains(@class,'MuiIconButton-root')])[25]";
+        private readonly string _hardwareIcon = "(//button[contains(@class,'MuiIconButton-root')])[17]";
+        private readonly string _LabelsIcon = "(//button[contains(@class,'MuiIconButton-root')])[18]";
+        private readonly string _channelsIcon = "(//button[contains(@class,'MuiIconButton-root')])[19]";
+        private readonly string _wifiIconLabelAP = "(//div[@class='PinLabels-Label PinLabels-Label_color_dark'])[i]";
+        private readonly string _wifiIconChannel = "(//div[@class='PPinLabels-Label PinLabels-Label_color_light'])[i]";
+        private readonly string _pinsIconText = "//div[text() = 'txt']";
+
 
         public async Task ClickNextButton()
         {
@@ -269,6 +276,55 @@ namespace PlaywrightTests.Pages.Projects
         {
             await Helper.Click(_page, _wiringIcon);
         }
+
+        public async Task ClickHardwareIconAsync()
+        {
+            await Helper.Click(_page, _hardwareIcon);
+        }
+
+        public async Task ClickLabelsIconAsync()
+        {
+            await Helper.Click(_page, _LabelsIcon);
+        }
+
+        public async Task ClickChannelsIconAsync()
+        {
+            await Helper.Click(_page, _channelsIcon);
+        }
+
+        public async Task VerifyWifiIconLabelAPAsync(int index)
+        {
+            var locator = _wifiIconLabelAP.Replace("[i]", $"[{index}]");
+            var element = page.Locator(locator);
+            Assert.That(await element.IsVisibleAsync(), Is.True, $"WiFi Icon Label AP at index {index} is not visible.");
+        }
+
+        public async Task VerifyWifiIconChannelAsync(int index)
+        {
+            var locator = _wifiIconChannel.Replace("[i]", $"[{index}]");
+            var element = page.Locator(locator);
+            Assert.That(await element.IsVisibleAsync(), Is.True, $"WiFi Icon Channel at index {index} is not visible.");
+        }
+
+        public async Task VerifyIconNotOnMap(string index)
+        {
+            var wifiIconDynamicLocator = Regex.Replace(_wifiIcon, @"\[\s*i\s*\]", $"[{index}]");
+            var element = page.Locator(wifiIconDynamicLocator);
+            
+            Assert.That(await element.IsHiddenAsync(), Is.True, $"Icon at index {index} is still visible on the map.");
+        }
+
+        public async Task VerifyPinsNotOnMap(string text)
+        {
+            var locator = _pinsIconText.Replace("txt", text);
+            var element = page.Locator(locator);
+            
+            Assert.That(await element.IsHiddenAsync(), Is.True, $"Icon at txt {text} is still visible on the map.");
+        }
+
+
+
+
 
 
 
