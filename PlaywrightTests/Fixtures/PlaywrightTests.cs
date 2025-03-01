@@ -32,8 +32,9 @@ namespace PlaywrightTests
         }
 
         [Test]
-        public async Task VerifyFileUpload()
+        public async Task VerifyProjectCases()
         {
+           // Test 1: Verify project is built and added
             await dashboardPage!.ClickImportProjectArchieve();
             await projectsPage!.UploadProjectFile("\\TestFiles\\MultiplePolygonPoints.kmz");
             await projectsPage!.ClickNextButton();
@@ -46,7 +47,7 @@ namespace PlaywrightTests
             await projectsPage!.VerifyProjectNameAfterOpening("MultiplePolygonPoints");
             await projectsPage!.ClickHardwareButton();
 
-            //drag and drop AP
+            //Test 2: drag and drop AP
             await projectsPage!.ClickAddAnApButton();
             await projectsPage!.SelectApType("Outdoor");
             await projectsPage!.SelectApVendor("Aruba");
@@ -54,7 +55,7 @@ namespace PlaywrightTests
             await projectsPage!.DragAndDrop(120, 120);
             await projectsPage!.VerifyIconOnMap("1");
 
-            //drag and drop Idf
+            //Test 3: drag and drop Idf
             await projectsPage!.ClickIdfTab();
             await projectsPage!.ClickAddAnIdfButton();
             await projectsPage!.EnterSwitchName("IDF1");
@@ -66,47 +67,64 @@ namespace PlaywrightTests
             await projectsPage!.DragAndDrop(120, 190);
             await projectsPage!.VerifyIconOnMap("2");
 
-            //verify Idf ports
+            //Test 4: verify Idf ports
 
             await projectsPage!.ClickIdfRecordRow("IDF1");
             await projectsPage!.AssertUsedPortsValue("1");
             await projectsPage!.AssertFreePortsValue("1");
             await projectsPage!.ClickCancelButton();
-
             await projectsPage!.ClickIdfPlusIcon();
 
-            //drag and drop another Idf
+            //Test 5: Add wiring 
             await projectsPage!.EnterSwitchName("IDF2");
             await projectsPage!.ClickSwitchButton();
             await projectsPage!.EnterIdfName("Switch2");
             await projectsPage!.EnterNumberOfPorts("2");
             await projectsPage!.EnterTotalPower("100");
             await projectsPage!.ClickAddIdfButton();
-            await projectsPage!.DragAndDrop(120, 250);
-
-            
+            await projectsPage!.DragAndDrop(120, 250);            
             await Task.Delay(3000); // Wait for 3 seconds
             await projectsPage!.ClickEyeIcon();
             await Task.Delay(3000); // Wait for 3 seconds
-            await projectsPage!.CLickWiringBytton();
+            await projectsPage!.CLickWiringButton();
             await Task.Delay(3000); // Wait for 3 seconds
             await projectsPage!.ClickIdfRecordRow("IDF1");
             await Task.Delay(3000); // Wait for 3 seconds
 
-            //project delete implementation
+            //Test 6: Verify layers visibility
+            await projectsPage!.ClickEyeIcon();
 
+            //Test 6.1: Verify hardware visibility
+            await projectsPage!.ClickHardwareIconAsync();
+            await projectsPage!.VerifyIconNotOnMap("1");
+            await projectsPage!.VerifyIconNotOnMap("2");
+            await projectsPage!.VerifyIconNotOnMap("3");
+
+            await projectsPage!.ClickHardwareIconAsync();
+
+            //Test 6.2: Verify labels visibility            
+            await projectsPage!.ClickLabelsIconAsync();
+            await projectsPage!.VerifyWifiIconLabelAPNotOnMapAsync(1, "1");
+
+            //Test 6.3: Verify channel visibility
+            await projectsPage!.ClickChannelsIconAsync();
+            await projectsPage!.VerifyWifiIconChannelAsync(5, "38");
+
+            //Test 6.4: Verify pins visibility
+            await projectsPage!.ClickPinsIconAsync();
+            await projectsPage!.VerifyPinsNotOnMap("place1");
+            await projectsPage!.VerifyPinsNotOnMap("place2");
+            await projectsPage!.VerifyPinsNotOnMap("place3");
+
+            await projectsPage!.ClickIdfRecordRow("IDF1");
+            
+
+            //Test 7 : Delete Project
             await projectsPage!.ClickAppIcon();
             await projectsPage!.MouseOverClickCreatedProject();
             await projectsPage!.ClickProjectMenu();
             await projectsPage!.ClickProjectDelete();
             await projectsPage!.ClickConfirmDelete();
-
-
-
-
-
-
-
             
             
         }

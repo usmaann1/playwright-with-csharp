@@ -43,11 +43,12 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _idfPlusIcon = "(//button[text() = 'IDF'])[2]";
         private readonly string _eyeIconMap = "(//button[@variant='clear']//*[@size='16'])[3]";
         private readonly string _wiringIcon = "(//button[contains(@class,'MuiIconButton-root')])[25]";
-        private readonly string _hardwareIcon = "(//button[contains(@class,'MuiIconButton-root')])[17]";
-        private readonly string _LabelsIcon = "(//button[contains(@class,'MuiIconButton-root')])[18]";
-        private readonly string _channelsIcon = "(//button[contains(@class,'MuiIconButton-root')])[19]";
+        private readonly string _hardwareIcon = "(//button[contains(@class,'MuiIconButton-root')])[20]";
+        private readonly string _LabelsIcon = "(//button[contains(@class,'MuiIconButton-root')])[21]";
+        private readonly string _channelsIcon = "(//button[contains(@class,'MuiIconButton-root')])[22]";
+        private readonly string _pinsIcon = "(//button[contains(@class,'MuiIconButton-root')])[24]";
         private readonly string _wifiIconLabelAP = "(//div[@class='PinLabels-Label PinLabels-Label_color_dark'])[i]";
-        private readonly string _wifiIconChannel = "(//div[@class='PPinLabels-Label PinLabels-Label_color_light'])[i]";
+        private readonly string _wifiIconChannel = "(//div[@class='PinLabels-Label PinLabels-Label_color_light'])[i]";
         private readonly string _pinsIconText = "//div[text() = 'txt']";
 
 
@@ -272,38 +273,52 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.Click(_page, _eyeIconMap);
         }
 
-        public async Task CLickWiringBytton()
+        public async Task CLickWiringButton()
         {
             await Helper.Click(_page, _wiringIcon);
         }
 
         public async Task ClickHardwareIconAsync()
         {
-            await Helper.Click(_page, _hardwareIcon);
+            var locator = page.Locator(_hardwareIcon);
+            await locator.ClickAsync(new() { Force = true });
+
         }
 
         public async Task ClickLabelsIconAsync()
         {
-            await Helper.Click(_page, _LabelsIcon);
+            var locator = page.Locator(_LabelsIcon);
+            await locator.ClickAsync(new() { Force = true });
         }
 
         public async Task ClickChannelsIconAsync()
         {
-            await Helper.Click(_page, _channelsIcon);
+            var locator = page.Locator(_channelsIcon);
+            await locator.ClickAsync(new() { Force = true });
         }
 
-        public async Task VerifyWifiIconLabelAPAsync(int index)
+        public async Task ClickPinsIconAsync()
+        {
+            var locator = page.Locator(_pinsIcon);
+            await locator.ClickAsync(new() { Force = true });
+        }
+
+        public async Task VerifyWifiIconLabelAPNotOnMapAsync(int index, string labelText)
         {
             var locator = _wifiIconLabelAP.Replace("[i]", $"[{index}]");
             var element = page.Locator(locator);
-            Assert.That(await element.IsVisibleAsync(), Is.True, $"WiFi Icon Label AP at index {index} is not visible.");
-        }
+            string elementText = await element.InnerTextAsync();
+            Assert.That(elementText, Is.Not.EqualTo(labelText), $"WiFi Icon Channel at index {index} contains '23' but it should not.");
+        }        
 
-        public async Task VerifyWifiIconChannelAsync(int index)
+        public async Task VerifyWifiIconChannelAsync(int index, string text)
         {
             var locator = _wifiIconChannel.Replace("[i]", $"[{index}]");
             var element = page.Locator(locator);
-            Assert.That(await element.IsVisibleAsync(), Is.True, $"WiFi Icon Channel at index {index} is not visible.");
+
+            string elementText = await element.InnerTextAsync();
+            Assert.That(elementText, Is.EqualTo(text), $"WiFi Icon Channel at index {index} contains '23' but it should not.");
+            
         }
 
         public async Task VerifyIconNotOnMap(string index)
