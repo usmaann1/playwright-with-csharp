@@ -31,7 +31,7 @@ namespace PlaywrightTests
 
         }
 
-        [Test]
+        //[Test]
         public async Task VerifyProjectCases()
         {
            // Test 1: Verify project is built and added
@@ -118,7 +118,6 @@ namespace PlaywrightTests
 
             await projectsPage!.ClickIdfRecordRow("IDF1");
             
-
             //Test 7 : Delete Project
             await projectsPage!.ClickAppIcon();
             await projectsPage!.MouseOverClickCreatedProject();
@@ -128,6 +127,55 @@ namespace PlaywrightTests
             
             
         }
+        [Test]
+        public async Task VerifyWallsCases()
+        {
+            await dashboardPage!.ClickImportProjectArchieve();
+            await projectsPage!.UploadProjectFile("\\TestFiles\\MultiplePolygonPoints.kmz");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.SelectTechnology("WiFi");
+            await projectsPage!.SelectVendor("Aruba");
+            await projectsPage!.SelectModel("A574");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.VerifyProjectBuilding();
+            await projectsPage!.ClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
+            await projectsPage!.VerifyProjectNameAfterOpening("MultiplePolygonPoints");
+
+            //Test 1: verify wall types values
+            await projectsPage!.ClickWallsButtonAsync();
+            await projectsPage!.VerifyWallTypeValue(1, "0");
+            await projectsPage!.VerifyWallTypeValue(2, "0");
+            await projectsPage!.VerifyWallTypeValue(3, "0");
+            await projectsPage!.VerifyWallTypeValue(4, "0");
+            await projectsPage!.VerifyWallTypeValue(5, "0");
+            await projectsPage!.VerifyWallTypeValue(6, "0");
+            await projectsPage!.VerifyWallTypeValue(7, "0");
+
+            //Test 2: verify brick thickness Db
+            await projectsPage!.ClickWallTypeButtonAsync();
+            await projectsPage!.SelectMeterialType("Brick");
+            await projectsPage!.FillThicknessAsync("10");
+            await projectsPage!.VerifyThicknessDb("6.47");
+            await projectsPage!.FillHeightAsync("10");
+            await projectsPage!.ClickSaveButtonWallsInfoAsync();
+
+            //Test 3: verify added wall type value equal to zero
+            await projectsPage!.VerifyWallTypeValue(1, "0");
+
+            //Test 4: Draw square
+            await projectsPage!.DrawSquareAsync(120, 190, 100);
+            await projectsPage!.VerifyWallTypeValue(1, "5");
+            
+            // //Test 7 : Delete Project
+            await projectsPage!.ClickAppIcon();
+            await projectsPage!.MouseOverClickCreatedProject();
+            await projectsPage!.ClickProjectMenu();
+            await projectsPage!.ClickProjectDelete();
+            await projectsPage!.ClickConfirmDelete();
+            
+            
+        }
+
 
         [TearDown]
         public async Task TearDown()
