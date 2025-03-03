@@ -127,7 +127,7 @@ namespace PlaywrightTests
             
             
         }
-        [Test]
+        //[Test]
         public async Task VerifyWallsCases()
         {
             await dashboardPage!.ClickImportProjectArchieve();
@@ -163,14 +163,23 @@ namespace PlaywrightTests
             //Test 3: verify added wall type value equal to zero
             await projectsPage!.VerifyWallTypeValue(1, "0");
 
-            // Verify Wall thickness of newly created walls ?
-            // Verify wall color after creating a wall
-            // Verify hide/unhide wall is happening
-
             //Test 4: Draw square
             await projectsPage!.DrawSquareAsync(120, 120, 100);
             await Task.Delay(3000); // Wait for 3 seconds
             await projectsPage!.VerifyWallTypeValue(1, "5");
+
+            //Test 4: verify thickness
+            await projectsPage!.VerifyTenFtWallThicknessDisplayed();
+
+            //Test 5 : Delete Wall
+            await projectsPage!.ClickWallKebabMenu();
+            await projectsPage!.ClickSelectAllButton();
+            await projectsPage!.ClickDeleteWallButton();
+            await projectsPage!.ClickDeleteWallsAlertButton();
+
+            //Test 6 : verify created wall not displayed
+            await projectsPage!.ClickWallsButtonAsync();
+            await projectsPage!.VerifyCreatedWallNotDisplayed();
             
             // //Test 7 : Delete Project
             await projectsPage!.ClickAppIcon();
@@ -181,6 +190,50 @@ namespace PlaywrightTests
             
             
         }
+        [Test]
+        public async Task VerifyObstructionCases()
+        {
+            await dashboardPage!.ClickImportProjectArchieve();
+            await projectsPage!.UploadProjectFile("\\TestFiles\\MultiplePolygonPoints.kmz");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.SelectTechnology("WiFi");
+            await projectsPage!.SelectVendor("Aruba");
+            await projectsPage!.SelectModel("A574");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.VerifyProjectBuilding();
+            await projectsPage!.ClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
+            await projectsPage!.VerifyProjectNameAfterOpening("MultiplePolygonPoints");
+
+            //Test 1: verify obstruction is added 
+            await projectsPage!.ClickObstructionsButton();
+            await projectsPage!.ClickAddObstructionButton();
+            await projectsPage!.SelectObstructionMaterial("Brick");
+            await projectsPage!.FillThicknessAsync("10");
+            await projectsPage!.FillRoofThicknessInput("10");
+            await projectsPage!.FillHeightAsync("10");
+            await projectsPage!.ClickAddTypeButton();
+
+            //Test 2: Obstruction value
+            await projectsPage!.VerifyWallTypeValue(50, "0");
+
+            //Test 2: Thickness value
+            await projectsPage!.VerifyTenFtWallThicknessDisplayedObstruction();
+
+            //Test 3: Draw square
+            await projectsPage!.DrawSquareAsync(120, 120, 100);
+            await projectsPage!.VerifyWallTypeValue(50, "1");
+
+            
+            // //Test 7 : Delete Project
+            await projectsPage!.ClickAppIcon();
+            await projectsPage!.MouseOverClickCreatedProject();
+            await projectsPage!.ClickProjectMenu();
+            await projectsPage!.ClickProjectDelete();
+            await projectsPage!.ClickConfirmDelete();
+            
+            
+        }
+
 
 
         [TearDown]

@@ -51,6 +51,7 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _wifiIconChannel = "(//div[@class='PinLabels-Label PinLabels-Label_color_light'])[i]";
         private readonly string _pinsIconText = "//div[text() = 'txt']";
         private readonly string _wallsButton = "//button[@value='createWall']";
+        private readonly string _obstructionsButton = "//button[@value='obstructions']";
         private readonly string _wallTypeValue = "(//span[@color='systemGray'])[i]";
         private readonly string _wallTypeButton = "//*[text() = 'Wall Type' ]";
         private readonly string _meterialTypeDropdown = "//div[@id='material']";
@@ -58,7 +59,17 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _thicknessDb = "(//input[@type='number'])[3]";        
         private readonly string _heightInput = "//input[@id='height']";
         private readonly string _saveButtonWallsInfo = "//button[text() = 'Save']";
-
+        private readonly string _tenFtWallThickness = "//span[text() = '10ft']";
+        private readonly string _tenFtWallThicknessObstruction = "(//span[text() = '10ft'])[4]";
+        private readonly string _wallKebabMenu = "(//button[@variant='clear'])[4]";
+        private readonly string _selectAllButton = "//span[text() = 'Select all']";
+        private readonly string _deleteWallButton = "(//button//*[@stroke-linejoin='round'])[27]";
+        private readonly string _deleteWallsAlertButton = "//button[text() = 'Delete']";
+        private readonly string _addObstructionButton = "//button[text() = 'Add Obstruction']"; 
+        private readonly string _rectangleButton = "//button[@value='rectangle']"; 
+        private readonly string _obstructionMaterialDropdown = "//div[@id='mui-component-select-material']"; 
+        private readonly string _roofThicknessInput = "//input[@id='roofThickness']"; 
+        private readonly string _addTypeButton = "//button[text() = 'Add type']"; 
 
 
         public async Task ClickNextButton()
@@ -132,14 +143,14 @@ namespace PlaywrightTests.Pages.Projects
             var canvas = page.Locator("canvas");
             var boundingBox = await canvas.BoundingBoxAsync() ?? throw new Exception("Canvas not found");
 
-            float startCanvasX = (float)(boundingBox.X + startX);
-            float startCanvasY = (float)(boundingBox.Y + startY);
+            float startCanvasX =  (float)(boundingBox.X + boundingBox.Width / 2);
+            float startCanvasY = (float)(boundingBox.Y + boundingBox.Height / 2);
 
             // Click to focus on the canvas
             await page.Mouse.ClickAsync(startCanvasX, startCanvasY);
             
             // Move to the starting position and click
-            await page.Mouse.MoveAsync(startCanvasX, startCanvasY);
+            await page.Mouse.MoveAsync(startCanvasX-startX, startCanvasY-startY);
             await page.Mouse.DownAsync();
             await page.Mouse.ClickAsync(startCanvasX, startCanvasY);
 
@@ -456,6 +467,77 @@ namespace PlaywrightTests.Pages.Projects
 
             Console.WriteLine($"GraphQL API Request URI: {requestUri}");
         }
+
+        public async Task VerifyTenFtWallThicknessDisplayed()
+        {
+            var element = page.Locator(_tenFtWallThickness);
+            Assert.That(await element.IsVisibleAsync(), Is.True, "10ft Wall Thickness is not displayed.");
+        }
+        public async Task VerifyTenFtWallThicknessDisplayedObstruction()
+        {
+            var element = page.Locator(_tenFtWallThicknessObstruction);
+            Assert.That(await element.IsVisibleAsync(), Is.True, "10ft Wall Thickness is not displayed.");
+        }
+        public async Task VerifyCreatedWallNotDisplayed()
+        {
+            var element = page.Locator(_tenFtWallThickness);
+            Assert.That(await element.IsVisibleAsync(), Is.False, "10ft Wall Thickness is displayed but it should not be.");
+        }
+
+        public async Task ClickWallKebabMenu()
+        {
+            await Helper.Click(_page, _wallKebabMenu);
+        }
+
+        public async Task ClickSelectAllButton()
+        {
+            await Helper.Click(_page, _selectAllButton);
+        }
+
+        public async Task ClickDeleteWallButton()
+        {
+            await Helper.Click(_page, _deleteWallButton);
+        }
+
+        public async Task ClickDeleteWallsAlertButton()
+        {
+            await Helper.Click(_page, _deleteWallsAlertButton);
+        }
+
+        public async Task ClickObstructionsButton()
+        {
+            await Helper.Click(_page, _obstructionsButton);
+        }
+
+        public async Task ClickAddObstructionButton()
+        {
+            await Helper.Click(_page, _addObstructionButton);
+        }
+
+        public async Task ClickRectangleButton()
+        {
+            await Helper.Click(_page, _rectangleButton);
+        }
+
+        public async Task FillRoofThicknessInput(string value)
+        {
+            await Helper.Fill(_page, _roofThicknessInput, value);
+        }
+
+        public async Task SelectObstructionMaterial(string type)
+        {
+            await Helper.SelectFromDropDown(_page, _obstructionMaterialDropdown, type);
+        }
+
+        public async Task ClickAddTypeButton()
+        {
+            await Helper.Click(_page, _addTypeButton);
+        }
+
+
+
+
+
 
     }
 
