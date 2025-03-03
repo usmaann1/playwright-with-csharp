@@ -158,12 +158,14 @@ namespace PlaywrightTests
             await projectsPage!.VerifyThicknessDb("6.47");
             await projectsPage!.FillHeightAsync("10");
             await projectsPage!.ClickSaveButtonWallsInfoAsync();
+            await Task.Delay(3000); // Wait for 3 seconds
 
             //Test 3: verify added wall type value equal to zero
             await projectsPage!.VerifyWallTypeValue(1, "0");
 
             //Test 4: Draw square
-            await projectsPage!.DrawSquareAsync(120, 190, 100);
+            await projectsPage!.DrawSquareAsync(120, 120, 100);
+            await Task.Delay(3000); // Wait for 3 seconds
             await projectsPage!.VerifyWallTypeValue(1, "5");
             
             // //Test 7 : Delete Project
