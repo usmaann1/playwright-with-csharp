@@ -163,6 +163,10 @@ namespace PlaywrightTests
             //Test 3: verify added wall type value equal to zero
             await projectsPage!.VerifyWallTypeValue(1, "0");
 
+            // Verify Wall thickness of newly created walls ?
+            // Verify wall color after creating a wall
+            // Verify hide/unhide wall is happening
+
             //Test 4: Draw square
             await projectsPage!.DrawSquareAsync(120, 120, 100);
             await Task.Delay(3000); // Wait for 3 seconds
