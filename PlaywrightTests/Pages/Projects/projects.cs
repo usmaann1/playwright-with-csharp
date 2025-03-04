@@ -70,6 +70,17 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _obstructionMaterialDropdown = "//div[@id='mui-component-select-material']"; 
         private readonly string _roofThicknessInput = "//input[@id='roofThickness']"; 
         private readonly string _addTypeButton = "//button[text() = 'Add type']"; 
+        private readonly string _obstructionKebabMenuButton = "(//button[contains(@class,'MuiButtonBase-root MuiIconButton-root')])[13]";
+        private readonly string _obstructionDeleteButton = "//span[text() = 'Delete']";
+        private readonly string _createObstructionKebabBrickMenu = "(//div[@class='GroupItem-Suffix']//*[@stroke-linejoin='round'])[150]";
+        private readonly string _antennasTab = "//button[text() = 'Antennas']";
+        private readonly string _aPsTab = "//button[text() = 'APs']";
+        private readonly string _firstApRecordRow = "(//span[text() = '1'])[2]";
+        private readonly string _antennaTypeDropDown = "(//div[@role='combobox'])[1]";
+        private readonly string _antennaTypeDropDownSecondOption = "(//li[@role='option'])[2]";
+        private readonly string _antennaMenuPanel = "//div[@data-popper-placement='bottom']";
+        private readonly string _bandDropDown = "//div[@id='band']";
+        private readonly string _gainValue = "//input[@id='gain]";
 
 
         public async Task ClickNextButton()
@@ -478,6 +489,11 @@ namespace PlaywrightTests.Pages.Projects
             var element = page.Locator(_tenFtWallThicknessObstruction);
             Assert.That(await element.IsVisibleAsync(), Is.True, "10ft Wall Thickness is not displayed.");
         }
+        public async Task VerifyCreatedObstructionNotDiplayed()
+        {
+            var element = page.Locator(_tenFtWallThicknessObstruction);
+            Assert.That(await element.IsVisibleAsync(), Is.False, "10ft Wall Thickness is not displayed.");
+        }
         public async Task VerifyCreatedWallNotDisplayed()
         {
             var element = page.Locator(_tenFtWallThickness);
@@ -533,6 +549,73 @@ namespace PlaywrightTests.Pages.Projects
         {
             await Helper.Click(_page, _addTypeButton);
         }
+
+        public async Task HoverAndClickObstructionKebabMenuButton()
+        {
+            var locator = page.Locator(_obstructionKebabMenuButton);
+            await locator.ClickAsync();
+        }
+
+        public async Task ClickObstructionDeleteButton()
+        {
+            await Helper.Click(_page, _obstructionDeleteButton);
+        }
+
+        public async Task HoverAndClickCreateObstructionKebabBrickMenu()
+        {
+            var element = _page.Locator(_createObstructionKebabBrickMenu);
+            await element.HoverAsync();
+            await element.ClickAsync();
+        }
+        public async Task ClickAPsTab()
+        {
+            await Helper.Click(_page, _aPsTab);
+        }
+        public async Task ClickFirstApRecordRow()
+        {
+            await Helper.Click(_page, _firstApRecordRow);
+        }
+        public async Task ClickAntennasTab()
+        {
+            await Helper.Click(_page, _antennasTab);
+        }
+
+        public async Task ClickAntennaTypeDropDown()
+        {
+            await Helper.Click(_page, _antennaTypeDropDown);
+        }
+
+        public async Task HoverOverAntennaTypeDropDownSecondOption()
+        {
+            var element = _page.Locator(_antennaTypeDropDownSecondOption);
+            await element.HoverAsync();
+        }
+
+        public async Task VerifyAntennaMenuPanelDisplayed()
+        {
+            var element = _page.Locator(_antennaMenuPanel);
+            Assert.That(await element.IsVisibleAsync(), Is.True, "Antenna Menu Panel is not displayed.");
+        }
+
+        public async Task VerifyGainValue(string expectedValue)
+        {
+            var gainValueElement = page.Locator("//input[@id='gain']");
+            string? actualValue = await gainValueElement.GetAttributeAsync("value");
+            Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), $"Expected value '{expectedValue}' but found '{actualValue}'.");
+        }
+
+
+        public async Task SelectBand(string band)
+        {
+            await Helper.SelectFromDropDown(_page, _bandDropDown, band);
+        }
+
+
+
+
+
+
+
 
 
 

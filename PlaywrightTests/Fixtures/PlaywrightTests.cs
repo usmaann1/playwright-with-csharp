@@ -31,7 +31,7 @@ namespace PlaywrightTests
 
         }
 
-        //[Test]
+        [Test]
         public async Task VerifyProjectCases()
         {
            // Test 1: Verify project is built and added
@@ -117,8 +117,29 @@ namespace PlaywrightTests
             await projectsPage!.VerifyPinsNotOnMap("place3");
 
             await projectsPage!.ClickIdfRecordRow("IDF1");
+
+            //Test 7: Verify antennas
+            await projectsPage!.ClickAPsTab();
+            await projectsPage!.ClickFirstApRecordRow();
+            await projectsPage!.ClickAntennasTab();
+            await projectsPage!.ClickAntennaTypeDropDown();
+            await projectsPage!.HoverOverAntennaTypeDropDownSecondOption();
+
+            //Test8: verify panel displayed
+            await projectsPage!.VerifyAntennaMenuPanelDisplayed();
+
+            //Test8: verify gain value 
+            await projectsPage!.VerifyGainValue("13");
+
+            await projectsPage!.SelectBand("2.4GHz");
+
+            //Test8: verify gain value after 2.4GHz
+            await projectsPage!.VerifyGainValue("13");
+
+            //to be continued
+
             
-            //Test 7 : Delete Project
+            //Test x : Delete Project
             await projectsPage!.ClickAppIcon();
             await projectsPage!.MouseOverClickCreatedProject();
             await projectsPage!.ClickProjectMenu();
@@ -127,7 +148,7 @@ namespace PlaywrightTests
             
             
         }
-        //[Test]
+        [Test]
         public async Task VerifyWallsCases()
         {
             await dashboardPage!.ClickImportProjectArchieve();
@@ -175,10 +196,12 @@ namespace PlaywrightTests
             await projectsPage!.ClickWallKebabMenu();
             await projectsPage!.ClickSelectAllButton();
             await projectsPage!.ClickDeleteWallButton();
+            await Task.Delay(3000); 
             await projectsPage!.ClickDeleteWallsAlertButton();
 
             //Test 6 : verify created wall not displayed
             await projectsPage!.ClickWallsButtonAsync();
+            await Task.Delay(3000); 
             await projectsPage!.VerifyCreatedWallNotDisplayed();
             
             // //Test 7 : Delete Project
@@ -223,8 +246,20 @@ namespace PlaywrightTests
             await projectsPage!.DrawSquareAsync(120, 120, 100);
             await projectsPage!.VerifyWallTypeValue(50, "1");
 
-            
-            // //Test 7 : Delete Project
+            //Test 4: Delete obstruction
+            await projectsPage!.HoverAndClickCreateObstructionKebabBrickMenu();
+            await projectsPage!.ClickSelectAllButton();
+            await projectsPage!.HoverAndClickObstructionKebabMenuButton();
+            await projectsPage!.ClickObstructionDeleteButton();
+            await Task.Delay(3000); 
+            await projectsPage!.ClickDeleteWallsAlertButton();
+
+            //Test 5: verify created obstruction not displayed
+            await projectsPage!.ClickObstructionsButton();
+            await Task.Delay(3000); 
+            await projectsPage!.VerifyCreatedObstructionNotDiplayed();
+
+            // //Test 6 : Delete Project
             await projectsPage!.ClickAppIcon();
             await projectsPage!.MouseOverClickCreatedProject();
             await projectsPage!.ClickProjectMenu();
