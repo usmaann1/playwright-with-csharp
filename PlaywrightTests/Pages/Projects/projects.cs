@@ -79,7 +79,9 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _antennaTypeDropDown = "(//div[@role='combobox'])[1]";
         private readonly string _antennaTypeDropDownSecondOption = "(//li[@role='option'])[2]";
         private readonly string _antennaMenuPanel = "//div[@data-popper-placement='bottom']";
+        private readonly string _antennaMenuPanelCrossIcon = "//div[@data-popper-placement='bottom']//button";
         private readonly string _bandDropDown = "//div[@id='band']";
+        private readonly string _closeApInfoPanel = "(//button[contains(@class,'MuiIconButton-root')])[15]";
         private readonly string _gainValue = "//input[@id='gain]";
 
 
@@ -597,6 +599,13 @@ namespace PlaywrightTests.Pages.Projects
             Assert.That(await element.IsVisibleAsync(), Is.True, "Antenna Menu Panel is not displayed.");
         }
 
+        public async Task VerifyAntennaMenuPanelNotDisplayed()
+        {
+            var element = _page.Locator(_antennaMenuPanel);
+            Assert.That(await element.IsVisibleAsync(), Is.False, "Antenna Menu Panel is not displayed.");
+        }
+
+
         public async Task VerifyGainValue(string expectedValue)
         {
             var gainValueElement = page.Locator("//input[@id='gain']");
@@ -608,6 +617,16 @@ namespace PlaywrightTests.Pages.Projects
         public async Task SelectBand(string band)
         {
             await Helper.SelectFromDropDown(_page, _bandDropDown, band);
+        }
+
+        public async Task CloseAntennaMenuPannel()
+        {
+            await Helper.Click(_page, _antennaMenuPanelCrossIcon);
+        }
+
+         public async Task CloseAPInfoPanel()
+        {
+            await Helper.Click(_page, _closeApInfoPanel);
         }
 
 

@@ -136,11 +136,22 @@ namespace PlaywrightTests
             //Test8: verify gain value after 2.4GHz
             await projectsPage!.VerifyGainValue("13");
 
-            //to be continued
+            //Test9: Close Panel 
+            await projectsPage!.CloseAntennaMenuPannel();
+            await projectsPage!.VerifyAntennaMenuPanelNotDisplayed();
 
+            //Test 10: Verify antenna panel displayed again after mouse over
+            await projectsPage!.HoverOverAntennaTypeDropDownSecondOption();
+            await projectsPage!.VerifyAntennaMenuPanelDisplayed();
+
+            await projectsPage!.CloseAntennaMenuPannel();
+
+            await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
+            {
+                Timeout = 50000 
+            });   
             
-            //Test x : Delete Project
-            await projectsPage!.ClickAppIcon();
+            //Test 11 : Delete Project
             await projectsPage!.MouseOverClickCreatedProject();
             await projectsPage!.ClickProjectMenu();
             await projectsPage!.ClickProjectDelete();
