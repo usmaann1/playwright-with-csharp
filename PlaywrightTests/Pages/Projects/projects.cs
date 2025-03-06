@@ -83,7 +83,16 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _bandDropDown = "//div[@id='band']";
         private readonly string _closeApInfoPanel = "(//button[contains(@class,'MuiIconButton-root')])[15]";
         private readonly string _gainValue = "//input[@id='gain]";
-
+        private readonly string _measureButton = "//button[@value='measure']";     
+        private readonly string _measureGraphPanel = "(//div[contains(@class,'MuiBox-root')])//*[@height='250']";   
+        private readonly string _measureTextOnCanvas = "//*[text() = ' Click to start measurement ']";   
+        private readonly string _lineOfSightPanel= "//span[text() = 'Line of Sight']";   
+        private readonly string _panelLatitude= "(//input[@type='number'])[3]";   
+        private readonly string _panelLogitude= "(//input[@type='number'])[4]";   
+        private readonly string _canvasLatitude= "//span[contains(text(), 'Latitude:')]";   
+        private readonly string _canvasLongitude= "//span[contains(text(), 'Longitude:')]";
+        private readonly string _measureGraphPanelCross = "(//button[contains(@class,'MuiButtonBase-root')])[26]";   
+        private readonly string _lineOfSightPanelCross = "(//button[contains(@class,'MuiButtonBase-root')])[26]";   
 
         public async Task ClickNextButton()
         {
@@ -190,6 +199,38 @@ namespace PlaywrightTests.Pages.Projects
             await VerifyWallCreated(startCanvasX, startCanvasY);
 
         }
+
+        public async Task DrawStraightLineAsync(float offsetX1, float offsetY1, float offsetX2, float offsetY2)
+        {
+            var canvas = page.Locator("canvas");
+            var boundingBox = await canvas.BoundingBoxAsync() ?? throw new Exception("Canvas not found");
+
+            // Calculate the center of the canvas
+            float centerX = (float)(boundingBox.X + boundingBox.Width / 2);
+            float centerY = (float)(boundingBox.Y + boundingBox.Height / 2);
+
+            // Calculate the start and end points relative to the center
+            float startX = centerX + offsetX1;
+            float startY = centerY + offsetY1;
+            float endX = centerX + offsetX2;
+            float endY = centerY + offsetY2;
+
+            // Click to focus on the canvas
+            await page.Mouse.ClickAsync(centerX, centerY);
+
+            // Move to the start position and click
+            await page.Mouse.MoveAsync(startX, startY);
+            await page.Mouse.DownAsync();
+
+            // Move to the end position and click
+            await page.Mouse.MoveAsync(endX, endY);
+            await page.Mouse.UpAsync();
+
+            await page.Mouse.ClickAsync(endX, endY);
+
+        }
+
+
 
         public async Task ClickHardwareButton()
         {
@@ -628,6 +669,83 @@ namespace PlaywrightTests.Pages.Projects
         {
             await Helper.Click(_page, _closeApInfoPanel);
         }
+
+        public async Task ClickMeasure()
+        {
+            await Helper.Click(_page, _measureButton);
+        }
+
+        public async Task VerifyMeasureGraphPanelIsDisplayed()
+        {
+            var element = page.Locator(_measureGraphPanel);
+            Assert.That(await element.IsVisibleAsync(), Is.True, "Measure Graph Panel is not displayed.");
+        }
+
+        public async Task VerifyMeasureGraphPanelIsNotDisplayed()
+        {
+            var element = page.Locator(_measureGraphPanel);
+            Assert.That(await element.IsVisibleAsync(), Is.False, "Measure Graph Panel is displayed, but it should not be.");
+        }
+
+        public async Task VerifyMeasureTextOnCanvasAsync()
+        {
+            var element = page.Locator(_measureTextOnCanvas);
+            Assert.That(await element.IsVisibleAsync(), Is.True, "Measure text 'Click to start measurement' is not displayed on the canvas.");
+        }
+
+        public async Task VerifyLineOfSightPanelDisplayedAsync()
+        {
+            var element = page.Locator(_lineOfSightPanel);
+            Assert.That(await element.IsVisibleAsync(), Is.True, "The 'Line of Sight' panel is not displayed.");
+        }
+
+        public async Task VerifyLineOfSightPanelNotDisplayedAsync()
+        {
+            var element = page.Locator(_lineOfSightPanel);
+            Assert.That(await element.IsVisibleAsync(), Is.False, "The 'Line of Sight' panel is not displayed.");
+        }
+
+        public async Task VerifyLatitudeLongitudeMatchAsync()
+        {
+            // Get values from panel inputs
+            var panelLatitudeElement = page.Locator(_panelLatitude);
+            var panelLongitudeElement = page.Locator(_panelLogitude);
+            
+            string? panelLatitude = await panelLatitudeElement.GetAttributeAsync("value");
+            string? panelLongitude = await panelLongitudeElement.GetAttributeAsync("value");
+
+            Assert.That(panelLatitude, Is.Not.Null.Or.Empty, "Panel Latitude value is missing.");
+            Assert.That(panelLongitude, Is.Not.Null.Or.Empty, "Panel Longitude value is missing.");
+
+            // Get text from canvas elements
+            var canvasLatitudeElement = page.Locator(_canvasLatitude);
+            var canvasLongitudeElement = page.Locator(_canvasLongitude);
+
+            string canvasLatitudeText = await canvasLatitudeElement.InnerTextAsync();
+            string canvasLongitudeText = await canvasLongitudeElement.InnerTextAsync();
+
+            // Extract the numeric values from the text
+            string canvasLatitude = canvasLatitudeText.Replace("Latitude: ", "").Trim();
+            string canvasLongitude = canvasLongitudeText.Replace("Longitude: ", "").Trim();
+
+            Assert.That(canvasLatitude, Is.EqualTo(panelLatitude), $"Mismatch: Expected Latitude '{panelLatitude}', but found '{canvasLatitude}'.");
+            Assert.That(canvasLongitude, Is.EqualTo(panelLongitude), $"Mismatch: Expected Longitude '{panelLongitude}', but found '{canvasLongitude}'.");
+        }
+        public async Task CloseGraphPanel()
+        {
+            await Helper.Click(_page, _measureGraphPanelCross);
+        }
+
+        public async Task CloseLineOfSightPanel()
+        {
+            await Helper.Click(_page, _lineOfSightPanelCross);
+        }
+
+
+
+
+
+
 
 
 

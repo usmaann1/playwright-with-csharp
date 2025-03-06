@@ -279,6 +279,55 @@ namespace PlaywrightTests
             
             
         }
+        [Test]
+        public async Task VerifyMeasurementToolCases()
+        {
+            await dashboardPage!.ClickImportProjectArchieve();
+            await projectsPage!.UploadProjectFile("\\TestFiles\\MultiplePolygonPoints.kmz");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.SelectTechnology("WiFi");
+            await projectsPage!.SelectVendor("Aruba");
+            await projectsPage!.SelectModel("A574");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.VerifyProjectBuilding();
+            await projectsPage!.ClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
+            await projectsPage!.VerifyProjectNameAfterOpening("MultiplePolygonPoints");
+
+            await projectsPage!.ClickMeasure();
+
+            //Test1: verify start measure text displayed
+            await projectsPage!.VerifyMeasureTextOnCanvasAsync();
+            await Task.Delay(3000); 
+
+            //Test1: verify line of sight panel displayed
+            await projectsPage!.DrawStraightLineAsync(0, -100, 0, 100);
+            await projectsPage!.VerifyLineOfSightPanelDisplayedAsync();
+
+            //Test3: Verify longitude and latitude on panel and canvas
+           // await projectsPage!.VerifyLatitudeLongitudeMatchAsync();
+
+            //Test4: Verify graph panel diplays
+            await projectsPage!.VerifyMeasureGraphPanelIsDisplayed();
+
+            //Test4: Verify graph panel not diplays
+            await projectsPage!.CloseGraphPanel();
+            await projectsPage!.VerifyMeasureGraphPanelIsNotDisplayed();
+
+            //Test5: Verify line of site panel not displayed
+            await projectsPage!.CloseLineOfSightPanel();
+            await projectsPage!.VerifyLineOfSightPanelNotDisplayedAsync();
+
+           
+            // //Test 6 : Delete Project
+            await projectsPage!.ClickAppIcon();
+            await projectsPage!.MouseOverClickCreatedProject();
+            await projectsPage!.ClickProjectMenu();
+            await projectsPage!.ClickProjectDelete();
+            await projectsPage!.ClickConfirmDelete();
+            
+            
+        }
+
 
 
 
