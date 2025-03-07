@@ -14,6 +14,8 @@ namespace PlaywrightTests
         private LoginPage? loginPage;
         private DashboardPage? dashboardPage;
         private ProjectsPage? projectsPage;
+        private readonly string[] TreeTypes = ["Coniferous Trees", "Deciduous Trees", "Fruit Trees", "Savanna Trees", "Tropical Trees", "Urban Trees"];
+        private readonly string[] TreeTrunkCanopy = ["50", "40", "25", "60", "30", "40"];
 
         [SetUp]
         public async Task Setup()
@@ -327,7 +329,38 @@ namespace PlaywrightTests
             
             
         }
+        [Test]
+        public async Task VerifyDsmCases()
+        {           
+            await dashboardPage!.ClickImportProjectArchieve();
+            await projectsPage!.UploadProjectFile("\\TestFiles\\MultiplePolygonPoints.kmz");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.SelectTechnology("WiFi");
+            await projectsPage!.SelectVendor("Aruba");
+            await projectsPage!.SelectModel("A574");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.VerifyProjectBuilding();
+            await projectsPage!.ClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
+            await projectsPage!.VerifyProjectNameAfterOpening("MultiplePolygonPoints");
 
+            await projectsPage!.ClickDsm();
+
+            //Test1: verify tree types and their trunk canopy values
+            for(int i =0; i<6; i++)
+            {
+                await projectsPage!.SelectTreeType(TreeTypes[i]);
+                await projectsPage!.VerifyTreeTrunkCanopyValue(TreeTrunkCanopy[i]);
+            }               
+           
+            // //Test 6 : Delete Project
+            await projectsPage!.ClickAppIcon();
+            await projectsPage!.MouseOverClickCreatedProject();
+            await projectsPage!.ClickProjectMenu();
+            await projectsPage!.ClickProjectDelete();
+            await projectsPage!.ClickConfirmDelete();
+            
+            
+        }
 
 
 

@@ -83,7 +83,7 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _bandDropDown = "//div[@id='band']";
         private readonly string _closeApInfoPanel = "(//button[contains(@class,'MuiIconButton-root')])[15]";
         private readonly string _gainValue = "//input[@id='gain]";
-        private readonly string _measureButton = "//button[@value='measure']";     
+        private readonly string _measureButton = "//button[@value='measure']";    
         private readonly string _measureGraphPanel = "(//div[contains(@class,'MuiBox-root')])//*[@height='250']";   
         private readonly string _measureTextOnCanvas = "//*[text() = ' Click to start measurement ']";   
         private readonly string _lineOfSightPanel= "//span[text() = 'Line of Sight']";   
@@ -93,6 +93,9 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _canvasLongitude= "//span[contains(text(), 'Longitude:')]";
         private readonly string _measureGraphPanelCross = "(//button[contains(@class,'MuiButtonBase-root')])[26]";   
         private readonly string _lineOfSightPanelCross = "(//button[contains(@class,'MuiButtonBase-root')])[26]";   
+        private readonly string _dsmButton = "//button[@value='dsm']";    
+        private readonly string _treeTypeDropdown = "//div[@id = 'name'] ";
+        private readonly string _treeTrunkVsCanopyValue = "//input[@id = 'bottomHeightPct']";
 
         public async Task ClickNextButton()
         {
@@ -366,7 +369,7 @@ namespace PlaywrightTests.Pages.Projects
         public async Task AssertFreePortsValue(string expectedValue)
         {
             var usedPortsElement = page.Locator(_freePortsLocator);
-            string? actualValue = await usedPortsElement.GetAttributeAsync("value");
+            string? actualValue = await usedPortsElement.GetAttributeAsync("value" , new() { Timeout = 50000 });
             Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), $"Expected value '{expectedValue}' but found '{actualValue}'.");
         }
 
@@ -492,7 +495,7 @@ namespace PlaywrightTests.Pages.Projects
         public async Task VerifyThicknessDb(string expectedValue)
         {
             var thicknessDbElement = page.Locator(_thicknessDb);
-            string? actualValue = await thicknessDbElement.GetAttributeAsync("value");
+            string? actualValue = await thicknessDbElement.GetAttributeAsync("value" , new() { Timeout = 50000 });
             Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), $"Expected value '{expectedValue}' but found '{actualValue}'.");
         }
 
@@ -740,6 +743,24 @@ namespace PlaywrightTests.Pages.Projects
         {
             await Helper.Click(_page, _lineOfSightPanelCross);
         }
+        public async Task ClickDsm()
+        {
+            await Helper.Click(_page, _dsmButton);
+        }
+
+        public async Task VerifyTreeTrunkCanopyValue(string expectedValue)
+        {
+            var element = page.Locator(_treeTrunkVsCanopyValue);
+            string? actualValue = await element.GetAttributeAsync("value", new() { Timeout = 50000 });
+            Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), $"Expected value '{expectedValue}' but found '{actualValue}'.");
+        }
+
+
+        public async Task SelectTreeType(string type)
+        {
+            await Helper.SelectFromDropDown(_page, _treeTypeDropdown, type);
+        }
+
 
 
 
