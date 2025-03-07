@@ -96,7 +96,14 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _dsmButton = "//button[@value='dsm']";    
         private readonly string _treeTypeDropdown = "//div[@id = 'name'] ";
         private readonly string _treeTrunkVsCanopyValue = "//input[@id = 'bottomHeightPct']";
+        private readonly string _summaryButton = "(//button[contains(@class, 'MuiIconButton-sizeSmall')])[10]";        
+        private readonly string _projectNameOnTop = "(//a[@href='/']/parent::div//span)[1]";      
+        private readonly string _layoutNameOnTop = "(//a[@href='/']/parent::div//span)[1]";   
+        private readonly string _projectNameSummary = "(//div[text()='Project name']/parent::div//div)[2]";      
+        private readonly string _layoutNameSummary = "(//div[text()='Layout name']/parent::div//div)[2]";      
+        private readonly string _summaryWifiRecordsRow = "//span[text()='WiFi']/parent::div/div[@class='css-pnfj59']";      
 
+  
         public async Task ClickNextButton()
         {
             await Helper.Click(_page, _nextButton);
@@ -653,7 +660,7 @@ namespace PlaywrightTests.Pages.Projects
         public async Task VerifyGainValue(string expectedValue)
         {
             var gainValueElement = page.Locator("//input[@id='gain']");
-            string? actualValue = await gainValueElement.GetAttributeAsync("value");
+            string? actualValue = await gainValueElement.GetAttributeAsync("value" , new() { Timeout = 50000 });
             Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), $"Expected value '{expectedValue}' but found '{actualValue}'.");
         }
 
@@ -748,6 +755,10 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.Click(_page, _dsmButton);
         }
 
+        public async Task ClickSummary()
+        {
+            await Helper.Click(_page, _summaryButton);
+        }
         public async Task VerifyTreeTrunkCanopyValue(string expectedValue)
         {
             var element = page.Locator(_treeTrunkVsCanopyValue);
@@ -755,11 +766,38 @@ namespace PlaywrightTests.Pages.Projects
             Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), $"Expected value '{expectedValue}' but found '{actualValue}'.");
         }
 
-
         public async Task SelectTreeType(string type)
         {
             await Helper.SelectFromDropDown(_page, _treeTypeDropdown, type);
         }
+
+       public async Task VerifyProjectAndLayoutNamesAsync()
+        {
+            await Task.Delay(3000);
+            string projectNameOnTop = await page.Locator(_projectNameOnTop).InnerTextAsync();
+            string projectNameSummary = await page.Locator(_projectNameSummary).InnerTextAsync();
+            string layoutNameOnTop = await page.Locator(_layoutNameOnTop).InnerTextAsync();
+            string layoutNameSummary = await page.Locator(_layoutNameSummary).InnerTextAsync();
+
+            // Remove " layout" from layoutNameSummary before comparison
+            layoutNameSummary = layoutNameSummary.Replace(" layout", "").Trim();
+
+            Assert.That(projectNameOnTop, Is.EqualTo(projectNameSummary), 
+                $"Mismatch: Expected Project Name '{projectNameSummary}', but found '{projectNameOnTop}'.");
+
+            Assert.That(layoutNameOnTop, Is.EqualTo(layoutNameSummary), 
+                $"Mismatch: Expected Layout Name '{layoutNameSummary}', but found '{layoutNameOnTop}'.");
+        }
+
+
+        public async Task VerifyWifiRecordsNumberSummary(int noOfRecords)
+        {
+            var wifiRecords = await page.Locator(_summaryWifiRecordsRow).CountAsync();
+            Assert.That(wifiRecords, Is.EqualTo(noOfRecords), 
+                $"Expected {noOfRecords} WiFi records, but found {wifiRecords}.");
+        }
+
+
 
 
 
