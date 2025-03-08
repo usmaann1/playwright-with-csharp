@@ -305,7 +305,7 @@ namespace PlaywrightTests
             await projectsPage!.VerifyLineOfSightPanelDisplayedAsync();
 
             //Test3: Verify longitude and latitude on panel and canvas
-           // await projectsPage!.VerifyLatitudeLongitudeMatchAsync();
+            await projectsPage!.VerifyLatitudeLongitudeMatchAsync();
 
             //Test4: Verify graph panel diplays
             await projectsPage!.VerifyMeasureGraphPanelIsDisplayed();

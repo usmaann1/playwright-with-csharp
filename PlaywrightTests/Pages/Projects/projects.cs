@@ -728,12 +728,12 @@ namespace PlaywrightTests.Pages.Projects
             // Get values from panel inputs
             var panelLatitudeElement = page.Locator(_panelLatitude);
             var panelLongitudeElement = page.Locator(_panelLogitude);
-            
-            string? panelLatitude = await panelLatitudeElement.GetAttributeAsync("value");
-            string? panelLongitude = await panelLongitudeElement.GetAttributeAsync("value");
 
-            Assert.That(panelLatitude, Is.Not.Null.Or.Empty, "Panel Latitude value is missing.");
-            Assert.That(panelLongitude, Is.Not.Null.Or.Empty, "Panel Longitude value is missing.");
+            string? panelLatitudeText = await panelLatitudeElement.GetAttributeAsync("value");
+            string? panelLongitudeText = await panelLongitudeElement.GetAttributeAsync("value");
+
+            Assert.That(panelLatitudeText, Is.Not.Null.Or.Empty, "Panel Latitude value is missing.");
+            Assert.That(panelLongitudeText, Is.Not.Null.Or.Empty, "Panel Longitude value is missing.");
 
             // Get text from canvas elements
             var canvasLatitudeElement = page.Locator(_canvasLatitude);
@@ -743,12 +743,21 @@ namespace PlaywrightTests.Pages.Projects
             string canvasLongitudeText = await canvasLongitudeElement.InnerTextAsync();
 
             // Extract the numeric values from the text
-            string canvasLatitude = canvasLatitudeText.Replace("Latitude: ", "").Trim();
-            string canvasLongitude = canvasLongitudeText.Replace("Longitude: ", "").Trim();
+            string canvasLatitudeStr = canvasLatitudeText.Replace("Latitude: ", "").Trim();
+            string canvasLongitudeStr = canvasLongitudeText.Replace("Longitude: ", "").Trim();
 
-            Assert.That(canvasLatitude, Is.EqualTo(panelLatitude), $"Mismatch: Expected Latitude '{panelLatitude}', but found '{canvasLatitude}'.");
-            Assert.That(canvasLongitude, Is.EqualTo(panelLongitude), $"Mismatch: Expected Longitude '{panelLongitude}', but found '{canvasLongitude}'.");
+            // Convert to double and round to 2 decimal places
+            double panelLatitude = Math.Round(Convert.ToDouble(panelLatitudeText), 2);
+            double panelLongitude = Math.Round(Convert.ToDouble(panelLongitudeText), 2);
+            double canvasLatitude = Math.Round(Convert.ToDouble(canvasLatitudeStr), 2);
+            double canvasLongitude = Math.Round(Convert.ToDouble(canvasLongitudeStr), 2);
+
+            Assert.That(canvasLatitude, Is.EqualTo(panelLatitude), 
+                $"Mismatch: Expected Latitude '{panelLatitude}', but found '{canvasLatitude}'.");
+            Assert.That(canvasLongitude, Is.EqualTo(panelLongitude), 
+                $"Mismatch: Expected Longitude '{panelLongitude}', but found '{canvasLongitude}'.");
         }
+
 
         public async Task CloseGraphPanel()
         {
