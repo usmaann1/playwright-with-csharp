@@ -102,8 +102,13 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _projectNameSummary = "(//div[text()='Project name']/parent::div//div)[2]";      
         private readonly string _layoutNameSummary = "(//div[text()='Layout name']/parent::div//div)[2]";      
         private readonly string _summaryWifiRecordsRow = "//span[text()='WiFi']/parent::div/div[@class='css-pnfj59']";      
+        private readonly string _summaryMeterialsTab = "(//button[@role='tab'])[2]";   
+        private readonly string _summaryMeterialsWifiModle = "(//span[text()='Access Points']/parent::div/parent::p/parent::*//span)[8]";     
+        private readonly string _summaryMeterialsWifiCount = "(//span[text()='Access Points']/parent::div/parent::p/parent::*//span)[9]";     
+        private readonly string _summaryMeterialsIDFModel = "(//span[text()='IDFs']/parent::div/parent::p/parent::*//span)[8]";     
+        private readonly string _summaryMeterialsIDFCount = "(//span[text()='IDFs']/parent::div/parent::p/parent::*//span)[9]";     
 
-  
+
         public async Task ClickNextButton()
         {
             await Helper.Click(_page, _nextButton);
@@ -120,6 +125,7 @@ namespace PlaywrightTests.Pages.Projects
            await Helper.UploadFile(_page, _projectFileInput, filePath);
             
         }
+
         public async Task SelectTechnology(string tech)
         {
             await Helper.SelectFromDropDown(_page, _technologyDropdown, tech);
@@ -240,8 +246,6 @@ namespace PlaywrightTests.Pages.Projects
 
         }
 
-
-
         public async Task ClickHardwareButton()
         {
             await Helper.Click(_page, _hardwareButton);
@@ -347,7 +351,7 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.Click(_page, _projectDeleteConfirmButton);
         }
 
-         public async Task MouseOverClickCreatedProject()
+        public async Task MouseOverClickCreatedProject()
         {
             var element = page.Locator(_projectHoverLocator);
             await element.HoverAsync();
@@ -506,7 +510,7 @@ namespace PlaywrightTests.Pages.Projects
             Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), $"Expected value '{expectedValue}' but found '{actualValue}'.");
         }
 
-      public async Task VerifyWallCreated(float centerX, float centerY)
+        public async Task VerifyWallCreated(float centerX, float centerY)
         {
             string? requestUri = null;
             int statusCode = 0;
@@ -537,16 +541,19 @@ namespace PlaywrightTests.Pages.Projects
             var element = page.Locator(_tenFtWallThickness);
             Assert.That(await element.IsVisibleAsync(), Is.True, "10ft Wall Thickness is not displayed.");
         }
+
         public async Task VerifyTenFtWallThicknessDisplayedObstruction()
         {
             var element = page.Locator(_tenFtWallThicknessObstruction);
             Assert.That(await element.IsVisibleAsync(), Is.True, "10ft Wall Thickness is not displayed.");
         }
+
         public async Task VerifyCreatedObstructionNotDiplayed()
         {
             var element = page.Locator(_tenFtWallThicknessObstruction);
             Assert.That(await element.IsVisibleAsync(), Is.False, "10ft Wall Thickness is not displayed.");
         }
+
         public async Task VerifyCreatedWallNotDisplayed()
         {
             var element = page.Locator(_tenFtWallThickness);
@@ -620,14 +627,17 @@ namespace PlaywrightTests.Pages.Projects
             await element.HoverAsync();
             await element.ClickAsync();
         }
+
         public async Task ClickAPsTab()
         {
             await Helper.Click(_page, _aPsTab);
         }
+
         public async Task ClickFirstApRecordRow()
         {
             await Helper.Click(_page, _firstApRecordRow);
         }
+
         public async Task ClickAntennasTab()
         {
             await Helper.Click(_page, _antennasTab);
@@ -656,14 +666,12 @@ namespace PlaywrightTests.Pages.Projects
             Assert.That(await element.IsVisibleAsync(), Is.False, "Antenna Menu Panel is not displayed.");
         }
 
-
         public async Task VerifyGainValue(string expectedValue)
         {
             var gainValueElement = page.Locator("//input[@id='gain']");
             string? actualValue = await gainValueElement.GetAttributeAsync("value" , new() { Timeout = 50000 });
             Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), $"Expected value '{expectedValue}' but found '{actualValue}'.");
         }
-
 
         public async Task SelectBand(string band)
         {
@@ -675,7 +683,7 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.Click(_page, _antennaMenuPanelCrossIcon);
         }
 
-         public async Task CloseAPInfoPanel()
+        public async Task CloseAPInfoPanel()
         {
             await Helper.Click(_page, _closeApInfoPanel);
         }
@@ -741,6 +749,7 @@ namespace PlaywrightTests.Pages.Projects
             Assert.That(canvasLatitude, Is.EqualTo(panelLatitude), $"Mismatch: Expected Latitude '{panelLatitude}', but found '{canvasLatitude}'.");
             Assert.That(canvasLongitude, Is.EqualTo(panelLongitude), $"Mismatch: Expected Longitude '{panelLongitude}', but found '{canvasLongitude}'.");
         }
+
         public async Task CloseGraphPanel()
         {
             await Helper.Click(_page, _measureGraphPanelCross);
@@ -750,6 +759,7 @@ namespace PlaywrightTests.Pages.Projects
         {
             await Helper.Click(_page, _lineOfSightPanelCross);
         }
+
         public async Task ClickDsm()
         {
             await Helper.Click(_page, _dsmButton);
@@ -759,6 +769,7 @@ namespace PlaywrightTests.Pages.Projects
         {
             await Helper.Click(_page, _summaryButton);
         }
+
         public async Task VerifyTreeTrunkCanopyValue(string expectedValue)
         {
             var element = page.Locator(_treeTrunkVsCanopyValue);
@@ -771,7 +782,7 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.SelectFromDropDown(_page, _treeTypeDropdown, type);
         }
 
-       public async Task VerifyProjectAndLayoutNamesAsync()
+        public async Task VerifyProjectAndLayoutNamesAsync()
         {
             await Task.Delay(3000);
             string projectNameOnTop = await page.Locator(_projectNameOnTop).InnerTextAsync();
@@ -789,7 +800,6 @@ namespace PlaywrightTests.Pages.Projects
                 $"Mismatch: Expected Layout Name '{layoutNameSummary}', but found '{layoutNameOnTop}'.");
         }
 
-
         public async Task VerifyWifiRecordsNumberSummary(int noOfRecords)
         {
             var wifiRecords = await page.Locator(_summaryWifiRecordsRow).CountAsync();
@@ -797,22 +807,46 @@ namespace PlaywrightTests.Pages.Projects
                 $"Expected {noOfRecords} WiFi records, but found {wifiRecords}.");
         }
 
+        public async Task VerifySummaryMaterialsWifiModelAsync(string expectedModel)
+        {
+            var element = page.Locator(_summaryMeterialsWifiModle);
+            string actualModel = await element.InnerTextAsync();
 
+            Assert.That(actualModel, Is.EqualTo(expectedModel), 
+                $"Mismatch: Expected WiFi Model '{expectedModel}', but found '{actualModel}'.");
+        }
 
+        public async Task VerifySummaryMaterialsWifiCountAsync(string expectedCount)
+        {
+            var element = page.Locator(_summaryMeterialsWifiCount);
+            string actualCount = await element.InnerTextAsync();
 
+            Assert.That(actualCount, Is.EqualTo(expectedCount), 
+                $"Mismatch: Expected WiFi Model '{expectedCount}', but found '{actualCount}'.");
+        }
 
+        public async Task ClickMaterialsTab()
+        {
+            await Helper.Click(_page, _summaryMeterialsTab);
+        }
 
+        public async Task VerifySummaryMaterialsIDFModelAsync(string expectedModel)
+        {
+            var element = page.Locator(_summaryMeterialsIDFModel);
+            string actualModel = await element.InnerTextAsync();
 
+            Assert.That(actualModel, Is.EqualTo(expectedModel), 
+                $"Mismatch: Expected WiFi Model '{expectedModel}', but found '{actualModel}'.");
+        }
 
+        public async Task VerifySummaryMaterialsIDFCountAsync(string expectedCount)
+        {
+            var element = page.Locator(_summaryMeterialsIDFCount);
+            string actualCount = await element.InnerTextAsync();
 
-
-
-
-
-
-
-
-
+            Assert.That(actualCount, Is.EqualTo(expectedCount), 
+                $"Mismatch: Expected WiFi Model '{expectedCount}', but found '{actualCount}'.");
+        }
 
 
 
@@ -823,5 +857,5 @@ namespace PlaywrightTests.Pages.Projects
 
 
 
-    }
+}
 
