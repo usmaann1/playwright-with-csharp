@@ -771,7 +771,8 @@ namespace PlaywrightTests.Pages.Projects
         }
 
         public async Task VerifyTreeTrunkCanopyValue(string expectedValue)
-        {
+        {   
+            await Task.Delay(3000);
             var element = page.Locator(_treeTrunkVsCanopyValue);
             string? actualValue = await element.GetAttributeAsync("value", new() { Timeout = 50000 });
             Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), $"Expected value '{expectedValue}' but found '{actualValue}'.");
