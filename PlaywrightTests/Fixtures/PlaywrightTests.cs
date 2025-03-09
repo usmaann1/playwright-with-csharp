@@ -429,6 +429,99 @@ namespace PlaywrightTests
 
 
         }
+        [Test]
+        public async Task VerifyWifiChangesOnly()
+        {
+            await dashboardPage!.ClickImportProjectArchieve();
+            await projectsPage!.UploadProjectFile("\\TestFiles\\MultiplePolygonPoints.kmz");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.SelectTechnology("WiFi");
+            await projectsPage!.SelectVendor("Aruba");
+            await projectsPage!.SelectModel("A574");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.VerifyProjectBuilding();
+            await projectsPage!.ClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
+            await projectsPage!.ClickHardwareButton();
+
+            await projectsPage!.ClickAddAnApButton();
+            await projectsPage!.SelectApType("Indoor");
+            await projectsPage!.SelectApVendor("Aruba");
+            await projectsPage!.ClickAddApButton();
+            
+            //drag and drop ap
+            await projectsPage!.DragAndDrop(120, 120);
+
+            //Test1: verify after update Unit parent changes reflect in child
+
+            await projectsPage!.ClickApParentKebabButtonAsync();
+            await projectsPage!.ClickEditConfigButtonAsync();
+
+            await projectsPage!.SelectApType("Outdoor");
+            await projectsPage!.SelectApVendor("Cambium");
+            await projectsPage!.ClickUpdateApButtonAsync();
+
+            await projectsPage!.ClickApRecordSidePanelCrossButtonAsync("e500");
+            await projectsPage!.ClickChildAPRecordRow();
+
+            await projectsPage!.VerifyApTypeAsync("Outdoor");
+            await projectsPage!.VerifyVendorTypeAsync("Cambium");
+
+            //Test2: verify after update config parent changes reflect in child
+            await projectsPage!.ClickApRecordSidePanelCrossButtonAsync("e500");
+            await projectsPage!.ClickApParentKebabButtonAsync();
+            await projectsPage!.ClickEditConfigButtonAsync();
+
+            await projectsPage!.ClickConfigTab();
+
+            await projectsPage.SelectApConfigMountingAsync("Wall");
+            await projectsPage.FillApConfigLossAsync("10");
+            await projectsPage.FillApConfigHeightAsync("10");
+            await projectsPage.FillApConfigAboveRoofAsync("10");
+            await projectsPage.ClickApConfigAboveRoofCheckboxAsync();
+
+            await projectsPage.SelectApConfigChannelWidthAsync("20");
+            await projectsPage.FillApConfigTransmitPowerAsync("30");
+            await projectsPage.SelectApConfigModulationSchemaAsync("BPSK");
+            await projectsPage.SelectApConfigMimoAsync("2x2");
+            await projectsPage.FillApConfigRequiredPOEPowerAsync("25");
+
+            await projectsPage!.ClickUpdateApButtonAsync();
+            await projectsPage!.ClickApRecordSidePanelCrossButtonAsync("e500");
+
+            await Task.Delay(3000);
+
+            await projectsPage!.ClickChildAPRecordRow();
+            await projectsPage!.ClickConfigTab();
+
+            await projectsPage.VerifyApConfigMountingAsync("Wall");
+            await projectsPage.VerifyApConfigLossAsync("10");
+            await projectsPage.VerifyApConfigHeightAsync("10");
+            await projectsPage.VerifyApConfigAboveRoofCheckedAsync(true);
+            await projectsPage.VerifyApConfigAboveRoofAsync("10");
+            await projectsPage.VerifyApConfigChannelWidthAsync("20");
+            await projectsPage.VerifyApConfigTransmitPowerAsync("30");
+            await projectsPage.VerifyApConfigModulationSchemaAsync("BPSK");
+            await projectsPage.VerifyApConfigMimoAsync("2x2");
+            await projectsPage.VerifyApConfigRequiredPOEPowerAsync("25");
+
+          
+            //Test5: Delete project
+            await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
+            {
+                Timeout = 50000 
+            });   
+            
+            //Test 11 : Delete Project
+            await projectsPage!.MouseOverClickCreatedProject();
+            await projectsPage!.ClickProjectMenu();
+            await projectsPage!.ClickProjectDelete();
+            await projectsPage!.ClickConfirmDelete();
+
+
+
+        }
+
+
 
 
         [TearDown]

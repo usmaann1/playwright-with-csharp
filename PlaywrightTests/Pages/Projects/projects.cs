@@ -107,6 +107,24 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _summaryMeterialsWifiCount = "(//span[text()='Access Points']/parent::div/parent::p/parent::*//span)[9]";     
         private readonly string _summaryMeterialsIDFModel = "(//span[text()='IDFs']/parent::div/parent::p/parent::*//span)[8]";     
         private readonly string _summaryMeterialsIDFCount = "(//span[text()='IDFs']/parent::div/parent::p/parent::*//span)[9]";     
+        private readonly string _apParentKebabButton = "(//button[@variant='clear'])[4]";     
+        private readonly string _editConfigButton = "//span[text() = 'Edit config']";
+        private readonly string _updateApButton = "//button[contains(text() , 'Update')]";
+        private readonly string _apRecordSidePanelCrossButton = "((//span[text() = 'txt'])[3]/parent::*/parent::*/parent::*//button)[1]";
+        private readonly string _apType = "//div[@id= 'type']";
+        private readonly string _vendorType = "(//label[text() = 'Vendor & model']/parent::*//div[@role='combobox'])[1]";
+        private readonly string _childApRecordRow = "//span[text()='WiFi']/parent::*//span[contains(text(), 'layout')]";
+        private readonly string _apConfigTab = "//button[text()='Config']";
+        private readonly string _apConfigMountingDropdown = "//div[@id='mounting']";
+        private readonly string _apConfigLoss = "//input[@id='lossTerm']";
+        private readonly string _apConfigHeight = "//input[@id='height']";
+        private readonly string _apConfigAboveRoof = "//input[@id='zAboveRoof']";
+        private readonly string _apConfigAboveRoofCheckbox = "//input[@name='setAboveRoof']";
+        private readonly string _apConfigChannelWidthDropdown = "(//div[contains(@id, 'channelWidth')])[2]";
+        private readonly string _apConfigTransmitPower = "(//input[contains(@id, 'transmitPower')])[2]";
+        private readonly string _apConfigModulutionSchemaDropdown = "(//div[contains(@id, 'modulation')])[2]";
+        private readonly string _apConfigMimoDropdown = "(//div[contains(@id, 'mimo')])[2]";
+        private readonly string _apConfigRequiredPOEPower = "(//input[contains(@id, 'requiredPower')])[1]";
 
 
         public async Task ClickNextButton()
@@ -758,7 +776,6 @@ namespace PlaywrightTests.Pages.Projects
                 $"Mismatch: Expected Longitude '{panelLongitude}', but found '{canvasLongitude}'.");
         }
 
-
         public async Task CloseGraphPanel()
         {
             await Helper.Click(_page, _measureGraphPanelCross);
@@ -858,8 +875,172 @@ namespace PlaywrightTests.Pages.Projects
                 $"Mismatch: Expected WiFi Model '{expectedCount}', but found '{actualCount}'.");
         }
 
+        public async Task ClickApParentKebabButtonAsync()
+        {
+            await page.Locator(_apParentKebabButton).ClickAsync();
+        }
 
+        public async Task ClickEditConfigButtonAsync()
+        {
+            await page.Locator(_editConfigButton).ClickAsync();
+        }
 
+        public async Task ClickUpdateApButtonAsync()
+        {
+            await page.Locator(_updateApButton).ClickAsync();
+        }
+
+        public async Task ClickApRecordSidePanelCrossButtonAsync(string text)
+        {
+            string dynamicLocator = _apRecordSidePanelCrossButton.Replace("txt", text);
+            await page.Locator(dynamicLocator).ClickAsync();
+        }
+
+        public async Task VerifyApTypeAsync(string expectedValue)
+        {
+            var element = page.Locator(_apType);
+            string actualValue = await element.InnerTextAsync();
+            Assert.That(actualValue, Is.EqualTo(expectedValue), 
+                $"Mismatch: Expected AP Type '{expectedValue}', but found '{actualValue}'.");
+        }
+
+        public async Task VerifyVendorTypeAsync(string expectedValue)
+        {
+            var element = page.Locator(_vendorType);
+            string actualValue = await element.InnerTextAsync();
+            Assert.That(actualValue, Is.EqualTo(expectedValue), 
+                $"Mismatch: Expected Vendor Type '{expectedValue}', but found '{actualValue}'.");
+        }
+
+        public async Task ClickChildAPRecordRow()
+        {
+            await page.Locator(_childApRecordRow).ClickAsync();
+        }
+
+        public async Task ClickConfigTab()
+        {
+            await page.Locator(_apConfigTab).ClickAsync();
+        }
+
+        public async Task ClickApConfigAboveRoofCheckboxAsync()
+        {
+            await page.Locator(_apConfigAboveRoofCheckbox).ClickAsync();
+        }
+
+        public async Task FillApConfigLossAsync(string value)
+        {
+            await Helper.Fill(page, _apConfigLoss, value);
+        }
+
+        public async Task FillApConfigHeightAsync(string value)
+        {
+            await Helper.Fill(page, _apConfigHeight, value);
+        }
+
+        public async Task FillApConfigAboveRoofAsync(string value)
+        {
+            await Helper.Fill(page, _apConfigAboveRoof, value);
+        }
+
+        public async Task FillApConfigTransmitPowerAsync(string value)
+        {
+            await Helper.Fill(page, _apConfigTransmitPower, value);
+        }
+
+        public async Task FillApConfigRequiredPOEPowerAsync(string value)
+        {
+            await Helper.Fill(page, _apConfigRequiredPOEPower, value);
+        }
+
+        public async Task SelectApConfigMountingAsync(string option)
+        {
+            await Helper.SelectFromDropDown(page, _apConfigMountingDropdown, option);
+        }
+
+        public async Task SelectApConfigChannelWidthAsync(string option)
+        {
+            await Helper.SelectFromDropDown(page, _apConfigChannelWidthDropdown, option);
+        }
+
+        public async Task SelectApConfigModulationSchemaAsync(string option)
+        {
+            await Helper.SelectFromDropDown(page, _apConfigModulutionSchemaDropdown, option);
+        }
+
+        public async Task SelectApConfigMimoAsync(string option)
+        {
+            await Helper.SelectFromDropDown(page, _apConfigMimoDropdown, option);
+        }
+
+        public async Task VerifyApConfigMountingAsync(string expectedValue)
+        {
+            string actualValue = await page.Locator(_apConfigMountingDropdown).InnerTextAsync();
+            Assert.That(actualValue.Trim(), Is.EqualTo(expectedValue), 
+                $"Mismatch: Expected Mounting '{expectedValue}', but found '{actualValue}'.");
+        }
+
+        public async Task VerifyApConfigLossAsync(string expectedValue)
+        {
+            string? actualValue = await page.Locator(_apConfigLoss).GetAttributeAsync("value");
+            Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), 
+                $"Mismatch: Expected Loss '{expectedValue}', but found '{actualValue}'.");
+        }
+
+        public async Task VerifyApConfigHeightAsync(string expectedValue)
+        {
+            string? actualValue = await page.Locator(_apConfigHeight).GetAttributeAsync("value");
+            Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), 
+                $"Mismatch: Expected Height '{expectedValue}', but found '{actualValue}'.");
+        }
+
+        public async Task VerifyApConfigAboveRoofAsync(string expectedValue)
+        {
+            string? actualValue = await page.Locator(_apConfigAboveRoof).GetAttributeAsync("value");
+            Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), 
+                $"Mismatch: Expected Above Roof '{expectedValue}', but found '{actualValue}'.");
+        }
+
+        public async Task VerifyApConfigChannelWidthAsync(string expectedValue)
+        {
+            string actualValue = await page.Locator(_apConfigChannelWidthDropdown).InnerTextAsync();
+            Assert.That(actualValue.Trim(), Is.EqualTo(expectedValue), 
+                $"Mismatch: Expected Channel Width '{expectedValue}', but found '{actualValue}'.");
+        }
+
+        public async Task VerifyApConfigTransmitPowerAsync(string expectedValue)
+        {
+            string? actualValue = await page.Locator(_apConfigTransmitPower).GetAttributeAsync("value");
+            Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), 
+                $"Mismatch: Expected Transmit Power '{expectedValue}', but found '{actualValue}'.");
+        }
+
+        public async Task VerifyApConfigModulationSchemaAsync(string expectedValue)
+        {
+            string actualValue = await page.Locator(_apConfigModulutionSchemaDropdown).InnerTextAsync();
+            Assert.That(actualValue.Trim(), Is.EqualTo(expectedValue), 
+                $"Mismatch: Expected Modulation Schema '{expectedValue}', but found '{actualValue}'.");
+        }
+
+        public async Task VerifyApConfigMimoAsync(string expectedValue)
+        {
+            string actualValue = await page.Locator(_apConfigMimoDropdown).InnerTextAsync();
+            Assert.That(actualValue.Trim(), Is.EqualTo(expectedValue), 
+                $"Mismatch: Expected MIMO '{expectedValue}', but found '{actualValue}'.");
+        }
+
+        public async Task VerifyApConfigRequiredPOEPowerAsync(string expectedValue)
+        {
+            string? actualValue = await page.Locator(_apConfigRequiredPOEPower).GetAttributeAsync("value");
+            Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), 
+                $"Mismatch: Expected POE Power '{expectedValue}', but found '{actualValue}'.");
+        }
+        
+        public async Task VerifyApConfigAboveRoofCheckedAsync(bool expectedChecked)
+        {
+            bool isChecked = await page.Locator(_apConfigAboveRoofCheckbox).IsCheckedAsync();
+            Assert.That(isChecked, Is.EqualTo(expectedChecked), 
+                $"Mismatch: Expected Above Roof checkbox to be '{expectedChecked}', but found '{isChecked}'.");
+        }
 
 
     }
