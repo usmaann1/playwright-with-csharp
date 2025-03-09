@@ -125,6 +125,12 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _apConfigModulutionSchemaDropdown = "(//div[contains(@id, 'modulation')])[2]";
         private readonly string _apConfigMimoDropdown = "(//div[contains(@id, 'mimo')])[2]";
         private readonly string _apConfigRequiredPOEPower = "(//input[contains(@id, 'requiredPower')])[1]";
+        private readonly string _apConfigWifiGhzCheckbox = "(//input[contains(@id, 'isActive')])[1]";
+        private readonly string _apAntennasTab = "//button[text()='Antennas']";
+        private readonly string _apAntennasDownTilt = "//input[@id='downtilt-0']";
+        private readonly string _apAntennasAzimuth = "//input[@id='azimuth-0']";
+        private readonly string _apSettingsOverrideRadioBtn = "//input[@value='override']";
+        private readonly string _apRecordSidePanelCrossAP303Button = "((//span[text() = 'txt'])[2]/parent::*/parent::*//button)[1]";
 
 
         public async Task ClickNextButton()
@@ -896,6 +902,12 @@ namespace PlaywrightTests.Pages.Projects
             await page.Locator(dynamicLocator).ClickAsync();
         }
 
+        public async Task ClickApRecordSidePanelCrossButtonAP303Async(string text)
+        {
+            string dynamicLocator = _apRecordSidePanelCrossAP303Button.Replace("txt", text);
+            await page.Locator(dynamicLocator).ClickAsync();
+        }
+
         public async Task VerifyApTypeAsync(string expectedValue)
         {
             var element = page.Locator(_apType);
@@ -1034,13 +1046,57 @@ namespace PlaywrightTests.Pages.Projects
             Assert.That(actualValue ?? string.Empty, Is.EqualTo(expectedValue), 
                 $"Mismatch: Expected POE Power '{expectedValue}', but found '{actualValue}'.");
         }
-        
+
         public async Task VerifyApConfigAboveRoofCheckedAsync(bool expectedChecked)
         {
             bool isChecked = await page.Locator(_apConfigAboveRoofCheckbox).IsCheckedAsync();
             Assert.That(isChecked, Is.EqualTo(expectedChecked), 
                 $"Mismatch: Expected Above Roof checkbox to be '{expectedChecked}', but found '{isChecked}'.");
         }
+
+        public async Task ClickApConfigWifiGhzCheckboxAsync()
+        {
+            await page.Locator(_apConfigWifiGhzCheckbox).ClickAsync();
+        }
+
+        public async Task ClickApAntennasTabAsync()
+        {
+            await page.Locator(_apAntennasTab).ClickAsync();
+        }
+
+        public async Task FillApAntennasDownTiltAsync(string value)
+        {
+            await page.Locator(_apAntennasDownTilt).FillAsync(value);
+        }
+
+        public async Task FillApAntennasAzimuthAsync(string value)
+        {
+            await page.Locator(_apAntennasAzimuth).FillAsync(value);
+        }
+
+        public async Task ClickOverrideRadioButton()
+        {
+            await page.Locator(_apSettingsOverrideRadioBtn).ClickAsync();
+        }
+
+        public async Task VerifyApAntennasDownTiltAsync(string expectedValue)
+        {
+            var actualValue = await page.Locator(_apAntennasDownTilt).GetAttributeAsync("value");
+            Assert.That(actualValue, Is.EqualTo(expectedValue), 
+                $"Mismatch: Expected DownTilt '{expectedValue}', but found '{actualValue}'.");
+        }
+
+        public async Task VerifyApAntennasAzimuthAsync(string expectedValue)
+        {
+            var actualValue = await page.Locator(_apAntennasAzimuth).GetAttributeAsync("value");
+            Assert.That(actualValue, Is.EqualTo(expectedValue), 
+                $"Mismatch: Expected Azimuth '{expectedValue}', but found '{actualValue}'.");
+        }
+
+
+
+
+
 
 
     }

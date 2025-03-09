@@ -520,6 +520,73 @@ namespace PlaywrightTests
 
 
         }
+        [Test]
+        public async Task VerifyWifiOverrideChanges()
+        {
+            await dashboardPage!.ClickImportProjectArchieve();
+            await projectsPage!.UploadProjectFile("\\TestFiles\\MultiplePolygonPoints.kmz");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.SelectTechnology("WiFi");
+            await projectsPage!.SelectVendor("Aruba");
+            await projectsPage!.SelectModel("A574");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.VerifyProjectBuilding();
+            await projectsPage!.ClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
+            await projectsPage!.ClickHardwareButton();
+
+            await projectsPage!.ClickAddAnApButton();
+            await projectsPage!.SelectApType("Indoor");
+            await projectsPage!.SelectApVendor("Aruba");
+            await projectsPage!.ClickAddApButton();
+            
+            //drag and drop ap
+            await projectsPage!.DragAndDrop(120, 120);
+
+            //changes in child
+            await projectsPage!.ClickChildAPRecordRow();
+            await projectsPage!.ClickConfigTab();
+            await projectsPage.FillApConfigRequiredPOEPowerAsync("25");
+            await projectsPage!.ClickApConfigWifiGhzCheckboxAsync();
+            await projectsPage!.ClickApAntennasTabAsync();            
+            await projectsPage!.FillApAntennasDownTiltAsync("20");            
+            await projectsPage!.FillApAntennasAzimuthAsync("20");    
+            await projectsPage!.ClickUpdateApButtonAsync();
+            await projectsPage!.ClickApRecordSidePanelCrossButtonAP303Async("AP-303");       
+
+            //changes in parent
+            await projectsPage!.ClickApParentKebabButtonAsync();
+            await projectsPage!.ClickEditConfigButtonAsync();
+            await projectsPage!.SelectApType("Outdoor");
+            await projectsPage!.SelectApVendor("Cambium"); 
+            await projectsPage!.ClickApAntennasTabAsync();  
+            await projectsPage!.FillApAntennasDownTiltAsync("0");            
+            await projectsPage!.FillApAntennasAzimuthAsync("0");
+            await projectsPage!.ClickOverrideRadioButton();
+            await projectsPage!.ClickUpdateApButtonAsync();          
+            await projectsPage!.ClickApRecordSidePanelCrossButtonAsync("e500");
+
+            //verify overriden settings in child
+            await projectsPage!.ClickChildAPRecordRow();
+            await projectsPage!.ClickApAntennasTabAsync();            
+            await projectsPage!.VerifyApAntennasDownTiltAsync("0");          
+            await projectsPage!.VerifyApAntennasAzimuthAsync("0");          
+            
+          
+            //Test5: Delete project
+            await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
+            {
+                Timeout = 50000 
+            });   
+            
+            //Test 11 : Delete Project
+            await projectsPage!.MouseOverClickCreatedProject();
+            await projectsPage!.ClickProjectMenu();
+            await projectsPage!.ClickProjectDelete();
+            await projectsPage!.ClickConfirmDelete();
+
+
+
+        }
 
 
 
