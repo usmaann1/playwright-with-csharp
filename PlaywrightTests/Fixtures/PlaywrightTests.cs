@@ -161,6 +161,56 @@ namespace PlaywrightTests
             
         }
         [Test]
+        public async Task VerifyWifiAPDeletion()
+        {
+           // Test 1: Verify project is built and added
+            await dashboardPage!.ClickImportProjectArchieve();
+            await projectsPage!.UploadProjectFile("\\TestFiles\\MultiplePolygonPoints.kmz");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.SelectTechnology("WiFi");
+            await projectsPage!.SelectVendor("Aruba");
+            await projectsPage!.SelectModel("A574");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.VerifyProjectBuilding();
+            await projectsPage!.ClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
+            await projectsPage!.VerifyProjectNameAfterOpening("MultiplePolygonPoints");
+            await projectsPage!.ClickHardwareButton();
+
+            await projectsPage!.ClickAddAnApButton();
+            await projectsPage!.SelectApType("Outdoor");
+            await projectsPage!.SelectApVendor("Aruba");
+            await projectsPage!.ClickAddApButton();
+            await projectsPage!.DragAndDrop(120, 120);
+            await projectsPage!.VerifyIconOnMap("1");
+            await projectsPage!.HoverOverChildAPRecordRow();
+            await projectsPage!.ClickChildApKebabMenu();
+            await projectsPage!.ClickDeleteKebabMenu();
+            await projectsPage!.ClickConfirmDeleteAP();
+
+            await projectsPage!.PressEscapeKey();
+            await projectsPage!.VerifyIconNotOnMap("1");
+            await projectsPage!.VerifyChildAPRecordRowNotExists();
+
+            await projectsPage!.ClickApParentRecordRow("A574");
+            await projectsPage!.DragAndDrop(120, 120);
+
+            await projectsPage!.VerifyIconOnMap("1");
+            await projectsPage!.VerifyChildAPRecordRowExists();
+
+            await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
+            {
+                Timeout = 50000 
+            });   
+            
+            //Test 11 : Delete Project
+            await projectsPage!.MouseOverClickCreatedProject();
+            await projectsPage!.ClickProjectMenu();
+            await projectsPage!.ClickProjectDelete();
+            await projectsPage!.ClickConfirmDelete();
+            
+            
+        }
+        [Test]
         public async Task VerifyWallsCases()
         {
             await dashboardPage!.ClickImportProjectArchieve();

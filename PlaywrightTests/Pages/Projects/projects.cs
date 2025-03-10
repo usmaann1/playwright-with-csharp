@@ -131,7 +131,10 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _apAntennasAzimuth = "//input[@id='azimuth-0']";
         private readonly string _apSettingsOverrideRadioBtn = "//input[@value='override']";
         private readonly string _apRecordSidePanelCrossAP303Button = "((//span[text() = 'txt'])[2]/parent::*/parent::*//button)[1]";
-
+        private readonly string _childApKebabMenu = "(//button[@variant='clear'])[6]";
+        private readonly string _deleteButtonKebabMenu = "//span[text() = 'Delete']";
+        private readonly string _deleteApConfirmDelete = "//button[text()='Delete']";  
+        private readonly string _apParentRecordRow = "//span[text()='txt']";
 
         public async Task ClickNextButton()
         {
@@ -1092,6 +1095,61 @@ namespace PlaywrightTests.Pages.Projects
             Assert.That(actualValue, Is.EqualTo(expectedValue), 
                 $"Mismatch: Expected Azimuth '{expectedValue}', but found '{actualValue}'.");
         }
+
+        public async Task ClickChildApKebabMenu()
+        {
+            await page.Locator(_childApKebabMenu).ClickAsync();
+        }
+
+        public async Task ClickDeleteKebabMenu()
+        {
+            await page.Locator(_deleteButtonKebabMenu).ClickAsync();
+        }
+
+        public async Task ClickConfirmDeleteAP()
+        {
+            await page.Locator(_deleteApConfirmDelete).ClickAsync();
+        }
+
+        public async Task HoverOverChildAPRecordRow()
+        {
+            var locator = page.Locator(_childApRecordRow);
+            await locator.HoverAsync();
+            await Task.Delay(5000); 
+        }
+
+        public async Task VerifyChildAPRecordRowNotExists()
+        {
+            var locator = page.Locator(_childApRecordRow);
+            bool isVisible = await locator.IsVisibleAsync();
+            Assert.That(isVisible, Is.False, "Child AP Record Row was not found.");
+        }
+
+        public async Task VerifyChildAPRecordRowExists()
+        {
+            var locator = page.Locator(_childApRecordRow);
+            bool isVisible = await locator.IsVisibleAsync();
+            Assert.That(isVisible, Is.True, "Child AP Record Row was not found.");
+        }
+
+
+        public async Task PressEscapeKey()
+        {
+            await page.Keyboard.PressAsync("Escape");
+            await Task.Delay(5000); 
+
+        }
+
+        public async Task ClickApParentRecordRow(string apType)
+        {
+            var dyanamicLocator = _apParentRecordRow.Replace("txt", apType);
+            var locator = page.Locator(dyanamicLocator);
+            await locator.ClickAsync();
+        }
+
+
+
+
 
 
 
