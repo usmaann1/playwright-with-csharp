@@ -110,6 +110,7 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _apParentKebabButton = "(//button[@variant='clear'])[4]";     
         private readonly string _editConfigButton = "//span[text() = 'Edit config']";
         private readonly string _updateApButton = "//button[contains(text() , 'Update')]";
+        private readonly string _cancelApButton = "//button[contains(text() , 'Cancel')]";
         private readonly string _apRecordSidePanelCrossButton = "((//span[text() = 'txt'])[3]/parent::*/parent::*/parent::*//button)[1]";
         private readonly string _apType = "//div[@id= 'type']";
         private readonly string _vendorType = "(//label[text() = 'Vendor & model']/parent::*//div[@role='combobox'])[1]";
@@ -135,6 +136,21 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _deleteButtonKebabMenu = "//span[text() = 'Delete']";
         private readonly string _deleteApConfirmDelete = "//button[text()='Delete']";  
         private readonly string _apParentRecordRow = "//span[text()='txt']";
+
+        //Celullar Ap
+        private readonly string _apCarriersTab = "//button[text() = 'Carriers']";
+        private readonly string _apSectorsTab = "//button[text() = 'Sectors']";
+        private readonly string _apAddCarrierButton = "//button[text() = 'Add Carrier']";
+        private readonly string _apCarrierName= "//input[@id='name-0']";
+        private readonly string _apAddSectorButton = "//button[text() = 'Add Sector']";
+        private readonly string _apSectorName = "//input[@id='sectorName-0']";
+        private readonly string _apCarriersDropdown = "//div[@id='carrierIds-0']";
+        private readonly string _apCarrierLossInput = "//input[@id='noiseFigure']";
+        private readonly string _apSectorDownlitInput = "//input[@id='downtilt-0']";
+        private readonly string _apSectorAzimuthInput = "//input[@id='azimuth-0']";
+        private readonly string _childApRecordRowCellular = "//span[text()='Cellular']/parent::*//span[contains(text(), 'layout')]";
+        private readonly string _apCellularVendorDropdown = "(//div[@role='combobox'])[3]";
+
 
         public async Task ClickNextButton()
         {
@@ -1132,7 +1148,6 @@ namespace PlaywrightTests.Pages.Projects
             Assert.That(isVisible, Is.True, "Child AP Record Row was not found.");
         }
 
-
         public async Task PressEscapeKey()
         {
             await page.Keyboard.PressAsync("Escape");
@@ -1146,6 +1161,111 @@ namespace PlaywrightTests.Pages.Projects
             var locator = page.Locator(dyanamicLocator);
             await locator.ClickAsync();
         }
+
+        public async Task ClickApCarriersTab()
+        {
+            await Helper.Click(_page, _apCarriersTab);
+        }
+
+        public async Task ClickApSectorsTab()
+        {
+            await Helper.Click(_page, _apSectorsTab);
+        }
+
+        public async Task ClickApAddCarrierButton()
+        {
+            await Helper.Click(_page, _apAddCarrierButton);
+        }
+
+        public async Task ClickApAddSectorButton()
+        {
+            await Helper.Click(_page, _apAddSectorButton);
+        }
+
+        public async Task FillApCarrierName(string carrierName)
+        {
+            await Helper.Fill(_page, _apCarrierName, carrierName);
+        }
+
+        public async Task FillApSectorName(string sectorName)
+        {
+            await Helper.Fill(_page, _apSectorName, sectorName);
+        }
+
+        public async Task SelectApCarriersDropdown(string carrierValue)
+        {
+            await Helper.SelectFromDropDown(_page, _apCarriersDropdown, carrierValue);
+            await _page.Keyboard.PressAsync("Tab");
+
+
+            
+        }
+
+        public async Task FillApCarrierLoss(string lossValue)
+        {
+            await Helper.Fill(_page, _apCarrierLossInput, lossValue);
+        }
+
+        public async Task FillApSectorDownlit(string downlitValue)
+        {
+            await Helper.Fill(_page, _apSectorDownlitInput, downlitValue);
+        }
+
+        public async Task FillApSectorAzimuth(string azimuthValue)
+        {
+            await Helper.Fill(_page, _apSectorAzimuthInput, azimuthValue);
+        }
+
+        public async Task VerifyApCarrierLoss(string expectedLoss)
+        {
+            string actualLoss = await _page.Locator(_apCarrierLossInput).GetAttributeAsync("value") ?? string.Empty;
+            Assert.That(actualLoss, Is.EqualTo(expectedLoss), 
+                $"Mismatch: Expected Carrier Loss '{expectedLoss}', but found '{actualLoss}'.");
+        }
+
+        public async Task VerifyApSectorDownlit(string expectedDownlit)
+        {
+            string actualDownlit = await _page.Locator(_apSectorDownlitInput).GetAttributeAsync("value") ?? string.Empty;;
+            Assert.That(actualDownlit, Is.EqualTo(expectedDownlit), 
+                $"Mismatch: Expected Sector Downlit '{expectedDownlit}', but found '{actualDownlit}'.");
+        }
+
+        public async Task VerifyApSectorAzimuth(string expectedAzimuth)
+        {
+            string actualAzimuth = await _page.Locator(_apSectorAzimuthInput).GetAttributeAsync("value") ?? string.Empty;;
+            Assert.That(actualAzimuth, Is.EqualTo(expectedAzimuth), 
+                $"Mismatch: Expected Sector Azimuth '{expectedAzimuth}', but found '{actualAzimuth}'.");
+        }
+        
+        public async Task ClickChildApRecordRowCellular()
+        {
+            await Helper.Click(_page, _childApRecordRowCellular);
+        }
+
+        public async Task ClickCancelApButton()
+        {
+            await Helper.Click(_page, _cancelApButton);
+        }
+
+        public async Task SelectApCellularVendor(string vendor)
+        {
+            await Helper.SelectFromDropDown(_page, _apCellularVendorDropdown, vendor);
+        }
+
+        public async Task VerifyNotApCarrierLoss(string expectedLoss)
+        {
+            string actualLoss = await _page.Locator(_apCarrierLossInput).GetAttributeAsync("value") ?? string.Empty;
+            Assert.That(actualLoss, Is.Not.EqualTo(expectedLoss), 
+                $"Mismatch: Expected Carrier Loss '{expectedLoss}', but found '{actualLoss}'.");
+        }
+
+
+
+
+
+
+
+
 
 
 

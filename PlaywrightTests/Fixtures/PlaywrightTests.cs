@@ -638,6 +638,86 @@ namespace PlaywrightTests
 
         }
 
+        [Test]
+        public async Task VerifyCellularChangesOnly()
+        {
+            await dashboardPage!.ClickImportProjectArchieve();
+            await projectsPage!.UploadProjectFile("\\TestFiles\\MultiplePolygonPoints.kmz");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.SelectTechnology("Cellular");
+            await projectsPage!.SelectVendor("Airspan");
+            await projectsPage!.SelectModel("AirSpeed 1030");
+
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.VerifyProjectBuilding();
+            await projectsPage!.ClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
+            await projectsPage!.ClickHardwareButton();
+
+            await projectsPage!.ClickAddAnApButton();
+            await projectsPage!.SelectTechnology("Cellular");
+            await projectsPage!.SelectApType("Outdoor");
+            await projectsPage!.SelectApCellularVendor("Airspan");
+
+            await projectsPage!.ClickApCarriersTab();
+            await projectsPage!.ClickApAddCarrierButton();
+            await projectsPage!.FillApCarrierName("1");
+
+            await projectsPage!.ClickApSectorsTab();
+            await projectsPage!.ClickApAddSectorButton();
+            await projectsPage!.FillApSectorName("1");
+            await projectsPage!.SelectApCarriersDropdown("1");
+
+            await projectsPage!.ClickAddApButton();
+                      
+            //drag and drop ap
+            await projectsPage!.DragAndDrop(120, 120);
+            await projectsPage!.ClickChildApRecordRowCellular();
+            await projectsPage!.ClickApCarriersTab();
+
+            await projectsPage!.FillApCarrierLoss("10");
+            await projectsPage!.ClickUpdateApButtonAsync();
+            await projectsPage!.ClickCancelApButton();
+
+            await projectsPage!.ClickApParentRecordRow("AirHarmony 4000");
+            await projectsPage!.ClickApParentKebabButtonAsync();
+            await projectsPage!.ClickEditConfigButtonAsync();
+            await projectsPage!.ClickApCarriersTab();
+
+            await projectsPage!.VerifyNotApCarrierLoss("10");
+
+            await projectsPage!.ClickApSectorsTab();
+
+            await projectsPage!.FillApSectorDownlit("10");
+            await projectsPage!.FillApSectorAzimuth("10");
+
+            await projectsPage!.ClickUpdateApButtonAsync();
+            await projectsPage!.ClickCancelApButton();
+
+            await projectsPage!.ClickChildApRecordRowCellular();
+            await projectsPage!.ClickApCarriersTab();
+
+            await projectsPage!.VerifyApCarrierLoss("10");
+            await projectsPage!.ClickApSectorsTab();
+
+            await projectsPage!.VerifyApSectorDownlit("10");
+            await projectsPage!.VerifyApSectorAzimuth("10");
+          
+            //Test5: Delete project
+            await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
+            {
+                Timeout = 50000 
+            });   
+            
+            //Test 11 : Delete Project
+            await projectsPage!.MouseOverClickCreatedProject();
+            await projectsPage!.ClickProjectMenu();
+            await projectsPage!.ClickProjectDelete();
+            await projectsPage!.ClickConfirmDelete();
+
+
+
+        }
+
 
 
 
