@@ -142,9 +142,12 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _apSectorsTab = "//button[text() = 'Sectors']";
         private readonly string _apAddCarrierButton = "//button[text() = 'Add Carrier']";
         private readonly string _apCarrierName= "//input[@id='name-0']";
+        private readonly string _apSecondCarrierName= "//input[@id='name-1']";
         private readonly string _apAddSectorButton = "//button[text() = 'Add Sector']";
         private readonly string _apSectorName = "//input[@id='sectorName-0']";
+        private readonly string _apSecondSectorName = "//input[@id='sectorName-1']";
         private readonly string _apCarriersDropdown = "//div[@id='carrierIds-0']";
+        private readonly string _apCarriersSecondDropdown = "//div[@id='carrierIds-1']";
         private readonly string _apCarrierLossInput = "//input[@id='noiseFigure']";
         private readonly string _apSectorDownlitInput = "//input[@id='downtilt-0']";
         private readonly string _apSectorAzimuthInput = "//input[@id='azimuth-0']";
@@ -1187,9 +1190,20 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.Fill(_page, _apCarrierName, carrierName);
         }
 
+        public async Task FillApSecondCarrierName(string carrierName)
+        {
+            await Helper.Fill(_page, _apSecondCarrierName, carrierName);
+        }
+
+
         public async Task FillApSectorName(string sectorName)
         {
             await Helper.Fill(_page, _apSectorName, sectorName);
+        }
+
+        public async Task FillApSecondSectorName(string sectorName)
+        {
+            await Helper.Fill(_page, _apSecondSectorName, sectorName);
         }
 
         public async Task SelectApCarriersDropdown(string carrierValue)
@@ -1198,6 +1212,13 @@ namespace PlaywrightTests.Pages.Projects
             await _page.Keyboard.PressAsync("Tab");
 
 
+            
+        }
+
+        public async Task SelectApSecondCarriersDropdown(string carrierValue)
+        {
+            await Helper.SelectFromDropDown(_page, _apCarriersSecondDropdown, carrierValue);
+            await _page.Keyboard.PressAsync("Tab");
             
         }
 
@@ -1258,6 +1279,27 @@ namespace PlaywrightTests.Pages.Projects
             Assert.That(actualLoss, Is.Not.EqualTo(expectedLoss), 
                 $"Mismatch: Expected Carrier Loss '{expectedLoss}', but found '{actualLoss}'.");
         }
+
+        public async Task VerifyApCarrierNameVisibleAsync()
+        {
+            Assert.That(await page.Locator(_apCarrierName).IsVisibleAsync(), Is.True, "AP Carrier Name is not visible.");
+        }
+
+        public async Task VerifyApSecondCarrierNameVisibleAsync()
+        {
+            Assert.That(await page.Locator(_apSecondCarrierName).IsVisibleAsync(), Is.True, "AP Second Carrier Name is not visible.");
+        }
+
+        public async Task VerifyApSectorNameVisibleAsync()
+        {
+            Assert.That(await page.Locator(_apSectorName).IsVisibleAsync(), Is.True, "AP Sector Name is not visible.");
+        }
+
+        public async Task VerifyApSecondSectorNameVisibleAsync()
+        {
+            Assert.That(await page.Locator(_apSecondSectorName).IsVisibleAsync(), Is.True, "AP Second Sector Name is not visible.");
+        }
+
 
 
 
