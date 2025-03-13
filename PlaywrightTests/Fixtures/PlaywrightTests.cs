@@ -716,7 +716,6 @@ namespace PlaywrightTests
 
 
         }
-
         [Test]
         public async Task VerifyCellularSettingsOverride()
         {
@@ -808,8 +807,64 @@ namespace PlaywrightTests
 
 
         }
+        [Test]
+        public async Task VerifyAnnotationsCases()
+        {
+            await dashboardPage!.ClickImportProjectArchieve();
+            await projectsPage!.UploadProjectFile("\\TestFiles\\MultiplePolygonPoints.kmz");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.SelectTechnology("WiFi");
+            await projectsPage!.SelectVendor("Aruba");
+            await projectsPage!.SelectModel("A574");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.VerifyProjectBuilding();
+            await projectsPage!.ClickCreatedProject("project-card-MultiplePolygonPoints.kmz");
 
+            await projectsPage!.ClickAnnotationsButton();
+            await projectsPage!.ClickUploadOverlyImage();
+            await projectsPage!.UploadOverlyImage("\\TestFiles\\sample.png");
 
+            await projectsPage!.VerifyOverlyImage();
+
+            await projectsPage!.ClickDeleteOverlayImageIcon();
+            await projectsPage!.ClickDeleteOverlayButton();
+            await projectsPage!.ClickAnnotationsTab();
+
+            await projectsPage!.DragAndDrop(120, 120);
+            await projectsPage!.FillAnnotationsTextarea("Sample Comment");
+            await projectsPage!.ClickAnnotationsAddCommentButton();
+
+            await Task.Delay(3000);
+
+            await projectsPage!.UploadOverlyImage("\\TestFiles\\sample.png");
+            
+            await Task.Delay(3000);
+
+            await projectsPage!.ClickAnnotationsAddCommentButton();
+
+            await projectsPage!.VerifyAnnotationsTextareaUploadedImgIsVisible();
+            await projectsPage!.VerifyAnnotationsTextareaAddedCommentIsVisible("Sample Comment");
+            await projectsPage!.ClickDeleteOverlayImageIcon();
+            await projectsPage!.ClickDeleteOverlayButton();
+
+            await Task.Delay(3000);
+
+            await projectsPage!.VerifyAnnotationsTextareaUploadedImgIsNotVisible();
+            await projectsPage!.VerifyAnnotationsTextareaAddedCommentIsNotVisible("Sample Comment");
+
+            await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
+            {
+                Timeout = 50000 
+            });   
+            
+            //Test 11 : Delete Project
+            await projectsPage!.MouseOverClickCreatedProject();
+            await projectsPage!.ClickProjectMenu();
+            await projectsPage!.ClickProjectDelete();
+            await projectsPage!.ClickConfirmDelete();
+            
+            
+        }
 
 
         [TearDown]

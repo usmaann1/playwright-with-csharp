@@ -3,6 +3,8 @@ using NUnit.Framework;
 using PlaywrightTests.Helpers;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Text.Json;
+
 
 namespace PlaywrightTests.Pages.Projects
 {
@@ -17,7 +19,8 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _projectBuildingTextLocator = "(//section[@data-cy='project-card-MultiplePolygonPoints.kmz']//footer/div/div)[1]";
         private readonly string _projectName = "//section[@data-cy='name']/div";
         private readonly string _addApButton = "//button[contains(text(),'Add AP')]";
-        private readonly string _hardwareButton = "//button[@value='hardware']";        
+        private readonly string _hardwareButton = "//button[@value='hardware']";    
+        private readonly string _annotationsButton = "//button[@value='annotation']";        
         private readonly string _addAnApButton = "//button[contains(text(),'Add an AP')]";
         private readonly string _idfTab = "//button[contains(text(),'IDF')]";
         private readonly string _addAnIdfButton = "//button[contains(text(),'Add an IDF')]";
@@ -153,6 +156,20 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _apSectorAzimuthInput = "//input[@id='azimuth-0']";
         private readonly string _childApRecordRowCellular = "//span[text()='Cellular']/parent::*//span[contains(text(), 'layout')]";
         private readonly string _apCellularVendorDropdown = "(//div[@role='combobox'])[3]";
+
+        //annotations
+        private readonly string _uploadOverlyImageButton = "//button[text() = 'Upload an overlay image']";
+        private readonly string _overlyImageFileInput = "//input[@type='file']";
+        private readonly string _deleteOverlyImageIcon = "(//div[@role='button'])[1]";
+        private readonly string _deleteOverlyButton = "//button[text() = 'Delete']";
+        private readonly string _annotationsTab = "//button[text()='Annotations']";
+        private readonly string _annotationsTextarea= "//textarea[@placeholder='Enter your comment']";
+        private readonly string _annotationsTextareaUploadedImgLocator= "//img";
+        private readonly string _annotationsTextareaAddedCommentLocator= "(//span[text()='txt'])[1]";
+        private readonly string _annotationsAddCommentButton = "//button[text()='Add']";
+
+
+
 
 
         public async Task ClickNextButton()
@@ -296,6 +313,12 @@ namespace PlaywrightTests.Pages.Projects
         {
             await Helper.Click(_page, _hardwareButton);
         }
+
+        public async Task ClickAnnotationsButton()
+        {
+            await Helper.Click(_page, _annotationsButton);
+        }
+
 
         public async Task ClickAddAnApButton()
         {
@@ -1195,7 +1218,6 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.Fill(_page, _apSecondCarrierName, carrierName);
         }
 
-
         public async Task FillApSectorName(string sectorName)
         {
             await Helper.Fill(_page, _apSectorName, sectorName);
@@ -1299,6 +1321,126 @@ namespace PlaywrightTests.Pages.Projects
         {
             Assert.That(await page.Locator(_apSecondSectorName).IsVisibleAsync(), Is.True, "AP Second Sector Name is not visible.");
         }
+
+        public async Task UploadOverlyImage(string filePath)
+        {
+           await Helper.UploadFile(_page, _overlyImageFileInput, filePath);
+            
+        }
+
+        public async Task ClickUploadOverlyImage()
+        {
+            await Helper.Click(_page, _uploadOverlyImageButton);
+        }
+
+        public async Task ClickUploadAnnotationFileInTextArea()
+        {
+            await Helper.Click(_page, _uploadOverlyImageButton);
+        }
+        
+        public async Task VerifyOverlyImage()
+        {
+            string? requestUri = null;
+            int statusCode = 0;
+            bool isApiCalled = false;
+            string? responseBody = null;
+
+            page.RequestFinished += async (sender, request) =>
+            {
+                if (request.Url.EndsWith("/pnp/graphql"))
+                {
+                    isApiCalled = true;
+                    requestUri = request.Url; // Capture the final request URI
+                    var response = await request.ResponseAsync();
+                    statusCode = response!.Status;
+                    responseBody = await response.TextAsync(); // Get response body
+                }
+            };
+
+            await ClickNextButton();
+            await page.WaitForTimeoutAsync(3000);
+
+            // Assertions
+            Assert.That(isApiCalled, Is.True, "GraphQL API call was not triggered after double-click.");
+            Assert.That(statusCode, Is.EqualTo(200), $"Expected status 200 but got {statusCode}.");
+            Assert.That(responseBody, Is.Not.Null.Or.Empty, "Response body is null or empty.");
+
+            // Deserialize JSON response
+            if (responseBody == null)
+            {
+                throw new InvalidOperationException("Response body is null.");
+            }
+            using var jsonDoc = JsonDocument.Parse(responseBody);
+            var root = jsonDoc.RootElement;
+
+            // Extract __typename field from response
+            string typename = root
+                .GetProperty("data")
+                .GetProperty("createLayoutOverlay")
+                .GetProperty("__typename")
+                .GetString()!;
+
+            // Assert __typename is "CreateLayoutOverlay"
+            Assert.That(typename, Is.EqualTo("CreateLayoutOverlay"), $"Expected '__typename' to be 'CreateLayoutOverlay' but got '{typename}'.");
+
+            Console.WriteLine($"GraphQL API Request URI: {requestUri}");
+            Console.WriteLine($"GraphQL Response: {responseBody}");
+        }
+
+        public async Task ClickDeleteOverlayImageIcon()
+        {
+            await Helper.Click(_page, _deleteOverlyImageIcon);
+        }
+
+        public async Task ClickDeleteOverlayButton()
+        {
+            await Helper.Click(_page, _deleteOverlyButton);
+        }
+
+        public async Task ClickAnnotationsTab()
+        {
+            await Helper.Click(_page, _annotationsTab);
+        }
+
+        public async Task FillAnnotationsTextarea(string comment)
+        {
+            await Helper.Fill(_page, _annotationsTextarea, comment);
+        }
+        
+        public async Task VerifyAnnotationsTextareaUploadedImgIsVisible()
+        {
+            var isVisible = await _page.Locator(_annotationsTextareaUploadedImgLocator).IsVisibleAsync();
+            Assert.That(isVisible, Is.True, "The uploaded image in annotations textarea is not visible.");
+        }
+
+        public async Task VerifyAnnotationsTextareaUploadedImgIsNotVisible()
+        {
+            var isVisible = await _page.Locator(_annotationsTextareaUploadedImgLocator).IsVisibleAsync();
+            Assert.That(isVisible, Is.False, "The uploaded image in annotations textarea is unexpectedly visible.");
+        }
+
+        public async Task VerifyAnnotationsTextareaAddedCommentIsVisible(string commentText)
+        {
+            string dynamicLocator = $"(//span[text()='{commentText}'])[1]";
+            var isVisible = await _page.Locator(dynamicLocator).IsVisibleAsync();
+            Assert.That(isVisible, Is.True, $"The comment '{commentText}' is not visible in annotations textarea.");
+        }
+
+        public async Task VerifyAnnotationsTextareaAddedCommentIsNotVisible(string commentText)
+        {
+            string dynamicLocator = $"(//span[text()='{commentText}'])[1]";
+            var isVisible = await _page.Locator(dynamicLocator).IsVisibleAsync();
+            Assert.That(isVisible, Is.False, $"The comment '{commentText}' is unexpectedly visible in annotations textarea.");
+        }
+        public async Task ClickAnnotationsAddCommentButton()
+        {
+            await Helper.Click(_page, _annotationsAddCommentButton);
+        }
+
+
+
+
+
 
 
 
