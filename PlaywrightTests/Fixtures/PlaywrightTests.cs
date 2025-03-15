@@ -451,17 +451,17 @@ namespace PlaywrightTests
             await projectsPage!.VerifyProjectAndLayoutNamesAsync();
 
             //Test2: Verify Aps no of records
-           // await projectsPage!.VerifyWifiRecordsNumberSummary(2);
+           await projectsPage!.VerifyWifiRecordsNumberSummary(2);
 
             //Test3: Verify on materials tab (APs Models and Count)
 
             await projectsPage!.ClickMaterialsTab();            
             await projectsPage!.VerifySummaryMaterialsWifiModelAsync("A574");
-            //await projectsPage!.VerifySummaryMaterialsWifiCountAsync("2");
+            await projectsPage!.VerifySummaryMaterialsWifiCountAsync("2");
 
             //Test4: Verify on materials tab (IDF Models and Count)
             await projectsPage!.VerifySummaryMaterialsIDFModelAsync("2 Port Switch");
-            //await projectsPage!.VerifySummaryMaterialsIDFCountAsync("1");
+            await projectsPage!.VerifySummaryMaterialsIDFCountAsync("1");
 
             //Test5: Delete project
 
