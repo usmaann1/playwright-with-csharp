@@ -25,12 +25,11 @@ public class GlobalSetup
         Context = await Browser.NewContextAsync(new BrowserNewContextOptions
         {
             ViewportSize = new ViewportSize { Width = 1920, Height = 1080 },
-            IgnoreHTTPSErrors = true // Ensures compatibility with staging/test environments
+            IgnoreHTTPSErrors = true 
 
         });
 
-
-        Context.SetDefaultTimeout(20000); // Increase timeout to prevent flaky tests
+        Context.SetDefaultTimeout(20000); 
         // await Context.AddInitScriptAsync("window.matchMedia('(prefers-reduced-motion: reduce)').matches = true;");
     }
 

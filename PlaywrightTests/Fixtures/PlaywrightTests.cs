@@ -146,17 +146,6 @@ namespace PlaywrightTests
             await projectsPage!.VerifyAntennaMenuPanelDisplayed();
 
             await projectsPage!.CloseAntennaMenuPannel();
-
-            // await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
-            // {
-            //     Timeout = 50000 
-            // });   
-            
-            // //Test 11 : Delete Project
-            // await projectsPage!.MouseOverClickCreatedProject();
-            // await projectsPage!.ClickProjectMenu();
-            // await projectsPage!.ClickProjectDelete();
-            // await projectsPage!.ClickConfirmDelete();
             
             
         }
@@ -197,17 +186,6 @@ namespace PlaywrightTests
             await projectsPage!.VerifyIconOnMap("1");
             await projectsPage!.VerifyChildAPRecordRowExists();
 
-            // await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
-            // {
-            //     Timeout = 50000 
-            // });   
-            
-            // //Test 11 : Delete Project
-            // await projectsPage!.MouseOverClickCreatedProject();
-            // await projectsPage!.ClickProjectMenu();
-            // await projectsPage!.ClickProjectDelete();
-            // await projectsPage!.ClickConfirmDelete();
-            
             
         }
         [Test]
@@ -249,7 +227,7 @@ namespace PlaywrightTests
             //Test 4: Draw square
             await projectsPage!.DrawSquareAsync(120, 120, 100);
             await Task.Delay(3000); // Wait for 3 seconds
-            //await projectsPage!.VerifyWallTypeValue(1, "5");
+            await projectsPage!.VerifyWallTypeValue(1, "4");
 
             //Test 4: verify thickness
             await projectsPage!.VerifyTenFtWallThicknessDisplayed();
@@ -265,14 +243,7 @@ namespace PlaywrightTests
             await projectsPage!.ClickWallsButtonAsync();
             await Task.Delay(3000); 
             await projectsPage!.VerifyCreatedWallNotDisplayed();
-            
-            // //Test 7 : Delete Project
-            // await projectsPage!.ClickAppIcon();
-            // await projectsPage!.MouseOverClickCreatedProject();
-            // await projectsPage!.ClickProjectMenu();
-            // await projectsPage!.ClickProjectDelete();
-            // await projectsPage!.ClickConfirmDelete();
-            
+                        
             
         }
         [Test]
@@ -306,7 +277,7 @@ namespace PlaywrightTests
 
             //Test 3: Draw square
             await projectsPage!.DrawSquareAsync(120, 120, 100);
-           // await projectsPage!.VerifyWallTypeValue(50, "1");
+            await projectsPage!.VerifyWallTypeValue(50, "1");
 
             //Test 4: Delete obstruction
             await projectsPage!.HoverAndClickCreateObstructionKebabBrickMenu();
@@ -320,15 +291,7 @@ namespace PlaywrightTests
             await projectsPage!.ClickObstructionsButton();
             await Task.Delay(3000); 
             await projectsPage!.VerifyCreatedObstructionNotDiplayed();
-
-            // //Test 6 : Delete Project
-            // await projectsPage!.ClickAppIcon();
-            // await projectsPage!.MouseOverClickCreatedProject();
-            // await projectsPage!.ClickProjectMenu();
-            // await projectsPage!.ClickProjectDelete();
-            // await projectsPage!.ClickConfirmDelete();
-            
-            
+                       
         }
         [Test]
         public async Task VerifyMeasurementToolCases()
@@ -367,14 +330,6 @@ namespace PlaywrightTests
             //Test5: Verify line of site panel not displayed
             await projectsPage!.CloseLineOfSightPanel();
             await projectsPage!.VerifyLineOfSightPanelNotDisplayedAsync();
-
-           
-            // //Test 6 : Delete Project
-            // await projectsPage!.ClickAppIcon();
-            // await projectsPage!.MouseOverClickCreatedProject();
-            // await projectsPage!.ClickProjectMenu();
-            // await projectsPage!.ClickProjectDelete();
-            // await projectsPage!.ClickConfirmDelete();
             
             
         }
@@ -400,16 +355,10 @@ namespace PlaywrightTests
                 await projectsPage!.SelectTreeType(TreeTypes[i]);
                 await projectsPage!.VerifyTreeTrunkCanopyValue(TreeTrunkCanopy[i]);
             }               
-           
-            // //Test 6 : Delete Project
-            // await projectsPage!.ClickAppIcon();
-            // await projectsPage!.MouseOverClickCreatedProject();
-            // await projectsPage!.ClickProjectMenu();
-            // await projectsPage!.ClickProjectDelete();
-            // await projectsPage!.ClickConfirmDelete();
             
             
         }
+        
         [Test]
         public async Task VerifySummary()
         {
@@ -463,22 +412,9 @@ namespace PlaywrightTests
             await projectsPage!.VerifySummaryMaterialsIDFModelAsync("2 Port Switch");
             await projectsPage!.VerifySummaryMaterialsIDFCountAsync("1");
 
-            //Test5: Delete project
-
-            // await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
-            // {
-            //     Timeout = 50000 
-            // });   
-            
-            // //Test 11 : Delete Project
-            // await projectsPage!.MouseOverClickCreatedProject();
-            // await projectsPage!.ClickProjectMenu();
-            // await projectsPage!.ClickProjectDelete();
-            // await projectsPage!.ClickConfirmDelete();
-
-
 
         }
+
         [Test]
         public async Task VerifyWifiChangesOnly()
         {
@@ -554,22 +490,9 @@ namespace PlaywrightTests
             await projectsPage.VerifyApConfigMimoAsync("2x2");
             await projectsPage.VerifyApConfigRequiredPOEPowerAsync("25");
 
-          
-            //Test5: Delete project
-            // await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
-            // {
-            //     Timeout = 50000 
-            // });   
-            
-            // //Test 11 : Delete Project
-            // await projectsPage!.MouseOverClickCreatedProject();
-            // await projectsPage!.ClickProjectMenu();
-            // await projectsPage!.ClickProjectDelete();
-            // await projectsPage!.ClickConfirmDelete();
-
-
 
         }
+
         [Test]
         public async Task VerifyWifiOverrideChanges()
         {
@@ -620,21 +543,6 @@ namespace PlaywrightTests
             await projectsPage!.ClickApAntennasTabAsync();            
             await projectsPage!.VerifyApAntennasDownTiltAsync("0");          
             await projectsPage!.VerifyApAntennasAzimuthAsync("0");          
-            
-          
-            // //Test5: Delete project
-            // await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
-            // {
-            //     Timeout = 50000 
-            // });   
-            
-            // //Test 11 : Delete Project
-            // await projectsPage!.MouseOverClickCreatedProject();
-            // await projectsPage!.ClickProjectMenu();
-            // await projectsPage!.ClickProjectDelete();
-            // await projectsPage!.ClickConfirmDelete();
-
-
 
         }
         [Test]
@@ -701,21 +609,9 @@ namespace PlaywrightTests
             await projectsPage!.VerifyApSectorDownlit("10");
             await projectsPage!.VerifyApSectorAzimuth("10");
           
-            //Test5: Delete project
-            // await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
-            // {
-            //     Timeout = 50000 
-            // });   
-            
-            // //Test 11 : Delete Project
-            // await projectsPage!.MouseOverClickCreatedProject();
-            // await projectsPage!.ClickProjectMenu();
-            // await projectsPage!.ClickProjectDelete();
-            // await projectsPage!.ClickConfirmDelete();
-
-
 
         }
+
         [Test]
         public async Task VerifyCellularSettingsOverride()
         {
@@ -791,20 +687,6 @@ namespace PlaywrightTests
             await projectsPage!.VerifyApSectorDownlit("0");
             await projectsPage!.VerifyApSectorAzimuth("0");
           
-          
-            // //Test5: Delete project
-            // await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
-            // {
-            //     Timeout = 50000 
-            // });   
-            
-            // //Test 11 : Delete Project
-            // await projectsPage!.MouseOverClickCreatedProject();
-            // await projectsPage!.ClickProjectMenu();
-            // await projectsPage!.ClickProjectDelete();
-            // await projectsPage!.ClickConfirmDelete();
-
-
 
         }
         [Test]
@@ -851,17 +733,6 @@ namespace PlaywrightTests
 
             await projectsPage!.VerifyAnnotationsTextareaUploadedImgIsNotVisible();
             await projectsPage!.VerifyAnnotationsTextareaAddedCommentIsNotVisible("Sample Comment");
-
-            // await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
-            // {
-            //     Timeout = 50000 
-            // });   
-            
-            // //Test 11 : Delete Project
-            // await projectsPage!.MouseOverClickCreatedProject();
-            // await projectsPage!.ClickProjectMenu();
-            // await projectsPage!.ClickProjectDelete();
-            // await projectsPage!.ClickConfirmDelete();
             
             
         }

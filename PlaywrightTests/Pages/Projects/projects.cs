@@ -94,8 +94,8 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _panelLogitude= "(//input[@type='number'])[4]";   
         private readonly string _canvasLatitude= "//span[contains(text(), 'Latitude:')]";   
         private readonly string _canvasLongitude= "//span[contains(text(), 'Longitude:')]";
-        private readonly string _measureGraphPanelCross = "(//button[contains(@class,'MuiButtonBase-root')])[26]";   
-        private readonly string _lineOfSightPanelCross = "(//button[contains(@class,'MuiButtonBase-root')])[26]";   
+        private readonly string _measureGraphPanelCross = "(//button[contains(@class,'MuiButtonBase-root')])[27]";   
+        private readonly string _lineOfSightPanelCross = "(//button[contains(@class,'MuiButtonBase-root')])[27]";   
         private readonly string _dsmButton = "//button[@value='dsm']";    
         private readonly string _treeTypeDropdown = "//div[@id = 'name'] ";
         private readonly string _treeTrunkVsCanopyValue = "//input[@id = 'bottomHeightPct']";
@@ -881,6 +881,7 @@ namespace PlaywrightTests.Pages.Projects
         public async Task VerifyWifiRecordsNumberSummary(int noOfRecords)
         {
             await Task.Delay(2000);
+
             var wifiRecords = await page.Locator(_summaryWifiRecordsRow).CountAsync();
             Assert.That(wifiRecords, Is.EqualTo(noOfRecords), 
                 $"Expected {noOfRecords} WiFi records, but found {wifiRecords}.");
