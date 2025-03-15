@@ -880,6 +880,7 @@ namespace PlaywrightTests.Pages.Projects
 
         public async Task VerifyWifiRecordsNumberSummary(int noOfRecords)
         {
+            await Task.Delay(2000);
             var wifiRecords = await page.Locator(_summaryWifiRecordsRow).CountAsync();
             Assert.That(wifiRecords, Is.EqualTo(noOfRecords), 
                 $"Expected {noOfRecords} WiFi records, but found {wifiRecords}.");

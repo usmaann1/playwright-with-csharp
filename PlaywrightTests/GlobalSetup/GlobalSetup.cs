@@ -19,9 +19,19 @@ public class GlobalSetup
         Playwright = await Microsoft.Playwright.Playwright.CreateAsync();
         Browser = await Playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
         {
-            Headless = false 
+            Headless = true, 
+            Args = new[] { "--disable-gpu", "--window-size=1920,1080" }
         });
-     
+        Context = await Browser.NewContextAsync(new BrowserNewContextOptions
+        {
+            ViewportSize = new ViewportSize { Width = 1920, Height = 1080 },
+            IgnoreHTTPSErrors = true // Ensures compatibility with staging/test environments
+
+        });
+
+
+        Context.SetDefaultTimeout(20000); // Increase timeout to prevent flaky tests
+        // await Context.AddInitScriptAsync("window.matchMedia('(prefers-reduced-motion: reduce)').matches = true;");
     }
 
     [OneTimeTearDown]

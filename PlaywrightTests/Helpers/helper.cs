@@ -7,6 +7,7 @@ namespace PlaywrightTests.Helpers
     {
         public static async Task Click(IPage page, string locator, int timeout = 50000)
         {
+            await Task.Delay(AppConfig.HeadlessWait!);
             var element = page.Locator(locator);
             try
             {
@@ -27,6 +28,8 @@ namespace PlaywrightTests.Helpers
         }
         public static async Task Fill(IPage page, string locator, string value, int timeout = 10000)
         {
+            await Task.Delay(AppConfig.HeadlessWait!);
+
             var element = page.Locator(locator);
             try
             {
@@ -59,6 +62,8 @@ namespace PlaywrightTests.Helpers
         }
         public static async Task SelectFromDropDown(IPage page, string dropdownLocator, string dropdownValue, string dropdownOptionLocator = "//li[@role='option']" )
         {
+            await Task.Delay(AppConfig.HeadlessWait!);
+
             await page.Locator(dropdownLocator).ClickAsync();
 
             var options = page.Locator(dropdownOptionLocator);

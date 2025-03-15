@@ -6,7 +6,9 @@ public static class AppConfig
 {
     public static string? AppUrl { get; private set; }
     public static string? Email { get; private set; }
-    public static string? Password { get; private set; }
+    public static string? Password { get; private set; }    
+    public static int HeadlessWait { get; private set; }
+
 
     static AppConfig()
     {
