@@ -17,10 +17,11 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _vendorDropdown = "(//div[@role='combobox'])[2]"; 
         private readonly string _modelDropdown = "(//div[@role='combobox'])[3]"; 
         private readonly string _projectBuildingTextLocator = "(//section[@data-cy='project-card-MultiplePolygonPoints.kmz']//footer/div/div)[1]";
-        private readonly string _projectName = "//section[@data-cy='name']/div";
+        private readonly string _projectName = "(//section[@data-cy='name']/div)[1]";
         private readonly string _addApButton = "//button[contains(text(),'Add AP')]";
         private readonly string _hardwareButton = "//button[@value='hardware']";    
-        private readonly string _annotationsButton = "//button[@value='annotation']";        
+        private readonly string _annotationsButton = "//button[@value='annotation']";   
+        private readonly string _panButton = "//button[@value='pan']";        
         private readonly string _addAnApButton = "//button[contains(text(),'Add an AP')]";
         private readonly string _idfTab = "//button[contains(text(),'IDF')]";
         private readonly string _addAnIdfButton = "//button[contains(text(),'Add an IDF')]";
@@ -34,10 +35,10 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _apVendorDropdown = "(//div[@role='combobox'])[3]"; 
         private readonly string _wifiIcon = "(//div[@class='PinLabels-Label PinLabels-Label_color_dark'])[i]";
         private readonly string _appIcon = "//a[@href='/']";
-        private readonly string _projectMenu = "//section[contains(@data-cy, 'project-card-MultiplePolygonPoints')]//div[contains(@class, 'Card-Actions')]/div";
+        private readonly string _projectMenu = "//section[contains(@data-cy, 'project-card-projName')]//div[contains(@class, 'Card-Actions')]/div";
         private readonly string _projectDeleteButton = "(//li[@data-cy='project-card-menu-delete'])[1]";
         private readonly string _projectDeleteConfirmButton = "//button[text() = 'Yes, delete']";
-        private readonly string _projectHoverLocator = "//section[contains(@data-cy, 'project-card-MultiplePolygonPoints')]//h3";
+        private readonly string _projectHoverLocator = "(//section[contains(@data-cy, 'project-card-projName')]//h3)[1]";
         private readonly string _usedPortsLocator = "//input[@id='portsUsed-0']"; 
         private readonly string _freePortsLocator = "//input[@id='freePorts-0']";
         private readonly string _selectButtonLocator = "//button[@value = 'select']";
@@ -165,12 +166,22 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _annotationsTab = "//button[text()='Annotations']";
         private readonly string _annotationsTextarea= "//textarea[@placeholder='Enter your comment']";
         private readonly string _annotationsTextareaUploadedImgLocator= "//img";
-        private readonly string _annotationsTextareaAddedCommentLocator= "(//span[text()='txt'])[1]";
         private readonly string _annotationsAddCommentButton = "//button[text()='Add']";
 
-
-
-
+        //survey project
+        private readonly string _surveyDataButton ="(//button[contains(@class,'on-sizeSmall')])[12]/*[@fill='none']";
+        private readonly string _importSiteSurveyDataButton ="//span[text()='Import site survey data']/parent::*/div";
+        private readonly string _selectSurveyDataDropdown ="(//div[@role='combobox'])[1]";
+        private readonly string _selectSurveyDataDropdownOption ="//li[@role='option']/span[1]";
+        private readonly string _deleteIconUploadedCsvInDropdown ="(//li[@role='option']/button)[i]";
+        private readonly string _networkDropdown ="(//div[@role='combobox'])[3]";
+        private readonly string _bandDropdown ="(//div[@role='combobox'])[4]";
+        private readonly string _importButton ="//button[text()='Import']";
+        private readonly string _plusIconSiteSurveyData ="//*[text()='Site survey data']";
+        private readonly string _wifi5GHzRadioButton ="//label/span[text()='WiFi 5GHz']";
+        private readonly string _pciRadioButton ="//label/span[text()='PCI']";
+        private readonly string _wifi2dot4GhzRadioButton ="//label/span[text()='WiFi 2.4GHz']";
+        private readonly string _wifiButtonNavBar ="//span[contains(@class, 'iconSizeSmall ')]";
 
         public async Task ClickNextButton()
         {
@@ -224,6 +235,22 @@ namespace PlaywrightTests.Pages.Projects
         }
 
         public async Task DragAndDrop(float x, float y)
+        {
+            var canvas = page.Locator("canvas");
+
+            var boundingBox = await canvas.BoundingBoxAsync() ?? throw new Exception("Canvas not found");
+            float targetX = (float)(boundingBox.X + boundingBox.Width / 2);
+            float targetY = (float)(boundingBox.Y + boundingBox.Height / 2);
+
+            await page.Mouse.MoveAsync(targetX - x, targetY - y); 
+            await page.Mouse.DownAsync();
+            await page.Mouse.UpAsync(); 
+            // await page.Mouse.MoveAsync(targetX, targetY); 
+            // await page.Mouse.UpAsync(); 
+            
+        }
+
+        public async Task ClickAway(float x, float y)
         {
             var canvas = page.Locator("canvas");
 
@@ -319,6 +346,11 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.Click(_page, _annotationsButton);
         }
 
+        public async Task ClickPanButton()
+        {
+            await Helper.Click(_page, _annotationsButton);
+        }
+
 
         public async Task ClickAddAnApButton()
         {
@@ -399,9 +431,11 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.Click(_page, _cancelButton);
         }
 
-        public async Task ClickProjectMenu()
+        public async Task ClickProjectMenu(string projectName ="MultiplePolygonPoints")
         {
-            var element = page.Locator(_projectMenu);
+
+            var loc = _projectMenu.Replace("projName", projectName);
+            var element = page.Locator(loc);
             await element.HoverAsync();
             await Task.Delay(3000);
             await element.ClickAsync(new() { Force = true });
@@ -420,12 +454,16 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.Click(_page, _projectDeleteConfirmButton);
         }
 
-        public async Task MouseOverClickCreatedProject()
+    
+        public async Task MouseOverClickCreatedProject(string projectName ="MultiplePolygonPoints")
         {
-            var element = page.Locator(_projectHoverLocator);
-            await element.HoverAsync();
+            var dynamicLocator = _projectHoverLocator.Replace("projName", projectName);
+            var projectLocator = page.Locator(dynamicLocator);
+            await projectLocator.HoverAsync();
             await Task.Delay(3000);
+
         }
+
 
         public async Task ClickDroppedIconOnMap(string index)
         {
@@ -1434,30 +1472,219 @@ namespace PlaywrightTests.Pages.Projects
             var isVisible = await _page.Locator(dynamicLocator).IsVisibleAsync();
             Assert.That(isVisible, Is.False, $"The comment '{commentText}' is unexpectedly visible in annotations textarea.");
         }
+
         public async Task ClickAnnotationsAddCommentButton()
         {
             await Helper.Click(_page, _annotationsAddCommentButton);
         }
 
+        public async Task UploadSurveyFile(string filePath)
+        {
+           await Helper.UploadFile(_page, _projectFileInput, filePath);
+            
+        }
 
+        public async Task ClickSurveyDataButton()
+        {
+            await Helper.Click(_page, _surveyDataButton);
+        }
 
+        public async Task ClickImportSiteSurveyDataButton()
+        {
+            await Helper.Click(_page, _importSiteSurveyDataButton);
+        }
 
+        public async Task ClickImportButton()
+        {
+            await Helper.Click(_page, _importButton);
+        }
 
+        public async Task ClickSurveyDataDropDownUsingEnter()
+        {
+            await page.Locator("(//div[@role='combobox'])[1]").FocusAsync();
+            await page.Keyboard.PressAsync("Enter");
 
+        }
 
+        public async Task ClickSurveyDataDropDown()
+        {
+            await page.Locator("(//div[@role='combobox'])[1]").ClickAsync();
+        }
 
+        public async Task SelectSurveyData(string value)
+        {           
+            var options = page.Locator(_selectSurveyDataDropdownOption);
+            var optionCount = await options.CountAsync();
 
+            for (int i = 0; i < optionCount; i++)
+            {
+                var optionText = await options.Nth(i).InnerTextAsync();
 
+                if (optionText.Trim() == value)
+                {
+                    await options.Nth(i).ClickAsync();
+                    return; 
+                }
+            }
+        }
 
+        public async Task SelectSurveyFileTODeleteByIndex(string index)
+        {
+            var locator = _deleteIconUploadedCsvInDropdown.Replace("[i]", $"[{index}]");
+            await Helper.Click(_page, locator);
 
+        }
 
+        public async Task SelectNetwork(string value)
+        {
+            await Helper.SelectFromDropDown(_page, _networkDropdown, value);
+        }
 
+        public async Task SelectBandInSurvey(string value)
+        {
+            await Helper.SelectFromDropDown(_page, _bandDropdown, value);
+        }
 
+        public async Task ClickSiteSurveyDataPlusIcon()
+        {
+            await Helper.Click(_page, _plusIconSiteSurveyData);
+        }
 
+        public async Task ClickWifi5GHzRadioButton()
+        {
+            await page.Locator(_wifi5GHzRadioButton).ClickAsync();
+        }
 
+        public async Task ClickPciRadioButton()
+        {
+            await page.Locator(_pciRadioButton).ClickAsync();
+        }
 
+        public async Task ClickWifi2dot4GHzRadioButton()
+        {
+            await page.Locator(_wifi2dot4GhzRadioButton).ClickAsync();
+        }
 
+        public async Task ClickWifiOnNavbar()
+        {
+            await page.Locator(_wifiButtonNavBar).ClickAsync();
+        }
 
+        public async Task VerifyIndependentExternalMapResponsOnPCI()
+        {
+            string? requestUri = null;
+            int statusCode = 0;
+            bool isApiCalled = false;
+            string? responseBody = null;
+
+            page.RequestFinished += async (sender, request) =>
+            {
+                if (request.Url.EndsWith("/pnp/graphql"))
+                {
+                    isApiCalled = true;
+                    requestUri = request.Url; 
+                    var response = await request.ResponseAsync();
+                    statusCode = response!.Status;
+                    responseBody = await response.TextAsync(); 
+                }
+            };
+
+            await page.WaitForTimeoutAsync(3000);
+
+            await ClickPciRadioButton();
+            await page.WaitForTimeoutAsync(3000);
+
+            Assert.That(isApiCalled, Is.True, "GraphQL API call was not triggered after double-click.");
+            Assert.That(statusCode, Is.EqualTo(200), $"Expected status 200 but got {statusCode}.");
+            Assert.That(responseBody, Is.Not.Null.Or.Empty, "Response body is null or empty.");
+
+            if (responseBody == null)
+            {
+                throw new InvalidOperationException("Response body is null.");
+            }
+            using var jsonDoc = JsonDocument.Parse(responseBody);
+            var root = jsonDoc.RootElement;
+
+            string typename = root
+                .GetProperty("data")
+                .GetProperty("v2IndependentExternalMap")
+                .GetProperty("__typename")
+                .GetString()!;
+
+            string valueType = root
+                .GetProperty("data")
+                .GetProperty("v2IndependentExternalMap")
+                .GetProperty("valueType")
+                .GetString()!;
+
+            Assert.That(typename, Is.EqualTo("IndependentExternalMapSchema"), $"Expected '__typename' to be 'IndependentExternalMapSchema' but got '{typename}'.");
+            Assert.That(valueType, Is.EqualTo("pci"), $"Expected 'valueType' to be 'pci' but got '{valueType}'.");
+
+            Console.WriteLine($"GraphQL API Request URI: {requestUri}");
+            Console.WriteLine($"GraphQL Response: {responseBody}");
+        }
+
+        public async Task VerifyIndependentExternalMap2Dot4ResponsOnPCI()
+        {
+            string? requestUri = null;
+            int statusCode = 0;
+            bool isApiCalled = false;
+            string? responseBody = null;
+
+            page.RequestFinished += async (sender, request) =>
+            {
+                if (request.Url.EndsWith("/pnp/graphql"))
+                {
+                    isApiCalled = true;
+                    requestUri = request.Url; 
+                    var response = await request.ResponseAsync();
+                    statusCode = response!.Status;
+                    responseBody = await response.TextAsync(); 
+                }
+            };
+
+            await page.WaitForTimeoutAsync(3000);
+
+            await ClickWifi2dot4GHzRadioButton();
+            await page.WaitForTimeoutAsync(3000);
+
+            Assert.That(isApiCalled, Is.True, "GraphQL API call was not triggered after double-click.");
+            Assert.That(statusCode, Is.EqualTo(200), $"Expected status 200 but got {statusCode}.");
+            Assert.That(responseBody, Is.Not.Null.Or.Empty, "Response body is null or empty.");
+
+            if (responseBody == null)
+            {
+                throw new InvalidOperationException("Response body is null.");
+            }
+            using var jsonDoc = JsonDocument.Parse(responseBody);
+            var root = jsonDoc.RootElement;
+
+            string typename = root
+                .GetProperty("data")
+                .GetProperty("v2IndependentExternalMap")
+                .GetProperty("__typename")
+                .GetString()!;
+
+            string valueType = root
+                .GetProperty("data")
+                .GetProperty("v2IndependentExternalMap")
+                .GetProperty("valueType")
+                .GetString()!;
+
+            Assert.That(typename, Is.EqualTo("IndependentExternalMapSchema"), $"Expected '__typename' to be 'IndependentExternalMapSchema' but got '{typename}'.");
+            Assert.That(valueType, Is.EqualTo("pci"), $"Expected 'valueType' to be 'pci' but got '{valueType}'.");
+
+            Console.WriteLine($"GraphQL API Request URI: {requestUri}");
+            Console.WriteLine($"GraphQL Response: {responseBody}");
+        }
+
+        public async Task VerifyDeleteIconNotVisible(int index)
+        {
+            string dynamicLocator = $"(//li[@role='option']/button)[{index}]";
+            var isVisible = await page.Locator(dynamicLocator).IsVisibleAsync();
+            
+            Assert.That(isVisible, Is.False, $"Delete icon at index {index} should not be visible, but it is.");
+        }
 
 
 

@@ -16,6 +16,8 @@ namespace PlaywrightTests
         private ProjectsPage? projectsPage;
         private readonly string[] TreeTypes = ["Coniferous Trees", "Deciduous Trees", "Fruit Trees", "Savanna Trees", "Tropical Trees", "Urban Trees"];
         private readonly string[] TreeTrunkCanopy = ["50", "40", "25", "60", "30", "40"];
+        private string? projectName ="MultiplePolygonPoints"; 
+
 
         [SetUp]
         public async Task Setup()
@@ -27,7 +29,7 @@ namespace PlaywrightTests
             projectsPage = new(page);
             await page!.GotoAsync(AppConfig.AppUrl!, new PageGotoOptions
             {
-                Timeout = 50000 
+                Timeout = 120000 
             });            
             await loginPage!.Login(AppConfig.Email!, AppConfig.Password!);
 
@@ -358,7 +360,6 @@ namespace PlaywrightTests
             
             
         }
-        
         [Test]
         public async Task VerifySummary()
         {
@@ -414,7 +415,6 @@ namespace PlaywrightTests
 
 
         }
-
         [Test]
         public async Task VerifyWifiChangesOnly()
         {
@@ -492,7 +492,6 @@ namespace PlaywrightTests
 
 
         }
-
         [Test]
         public async Task VerifyWifiOverrideChanges()
         {
@@ -611,7 +610,6 @@ namespace PlaywrightTests
           
 
         }
-
         [Test]
         public async Task VerifyCellularSettingsOverride()
         {
@@ -732,9 +730,62 @@ namespace PlaywrightTests
             await Task.Delay(3000);
 
             await projectsPage!.VerifyAnnotationsTextareaUploadedImgIsNotVisible();
-            await projectsPage!.VerifyAnnotationsTextareaAddedCommentIsNotVisible("Sample Comment");
+            await projectsPage!.VerifyAnnotationsTextareaAddedCommentIsNotVisible("Sample Comment");            
             
+        }
+        [Test]
+        public async Task VerifySurveyCases()
+        {
+            projectName= "Gallo_bounds";
+            await dashboardPage!.ClickImportProjectArchieve();
+            await projectsPage!.UploadProjectFile("\\TestFiles\\Gallo_bounds.kmz");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.SelectTechnology("WiFi");
+            await projectsPage!.SelectVendor("Aruba");
+            await projectsPage!.SelectModel("A574");
+            await projectsPage!.ClickNextButton();
+            await projectsPage!.ClickCreatedProject("project-card-Gallo_bounds.kmz");
+
+            await projectsPage!.ClickSurveyDataButton();
+            await projectsPage!.ClickImportSiteSurveyDataButton();
+            await projectsPage!.UploadSurveyFile("\\TestFiles\\gallo1.csv");
+            await projectsPage!.ClickNextButton();
+
+            await projectsPage!.SelectNetwork("Wi-Fi");
+            await projectsPage!.SelectBandInSurvey("WiFi 5GHz");
+            await projectsPage!.ClickImportButton();
+
+            await projectsPage!.ClickSurveyDataDropDown();
+            await projectsPage!.ClickSiteSurveyDataPlusIcon();
+
+            await projectsPage!.UploadSurveyFile("\\TestFiles\\gallo2.csv");
+            await projectsPage!.ClickNextButton();
+
+            await projectsPage!.SelectNetwork("Wi-Fi");
+            await projectsPage!.SelectBandInSurvey("WiFi 2.4GHz");
+            await projectsPage!.ClickImportButton();
+
+            await projectsPage!.SelectSurveyData("gallo1.csv");
+            await projectsPage!.SelectSurveyData("gallo2.csv");
+
+            await projectsPage!.ClickAway(120, 120);
             
+            await projectsPage!.ClickWifiOnNavbar();
+            await projectsPage!.ClickWifi5GHzRadioButton();
+
+            await projectsPage!.VerifyIndependentExternalMapResponsOnPCI();
+            await page!.WaitForTimeoutAsync(5000);
+            await projectsPage!.VerifyIndependentExternalMap2Dot4ResponsOnPCI();
+
+            await projectsPage!.ClickAway(120, 120);
+
+            await projectsPage!.ClickSurveyDataDropDown();
+            await projectsPage!.SelectSurveyFileTODeleteByIndex("1");
+            await projectsPage!.SelectSurveyFileTODeleteByIndex("1");
+
+            await projectsPage!.VerifyDeleteIconNotVisible(1);
+             
+           
         }
 
 
@@ -748,8 +799,8 @@ namespace PlaywrightTests
                     Timeout = 50000 
                 });
 
-                await projectsPage!.MouseOverClickCreatedProject();
-                await projectsPage!.ClickProjectMenu();
+                await projectsPage!.MouseOverClickCreatedProject(projectName!);
+                await projectsPage!.ClickProjectMenu(projectName!);
                 await projectsPage!.ClickProjectDelete();
                 await projectsPage!.ClickConfirmDelete();
 
