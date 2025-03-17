@@ -783,8 +783,7 @@ namespace PlaywrightTests
             await projectsPage!.SelectSurveyFileTODeleteByIndex("1");
             await projectsPage!.SelectSurveyFileTODeleteByIndex("1");
 
-            await projectsPage!.VerifyDeleteIconNotVisible(1);
-             
+            await projectsPage!.VerifyDeleteIconNotVisible(1);            
            
         }
 
@@ -799,10 +798,12 @@ namespace PlaywrightTests
                     Timeout = 50000 
                 });
 
-                await projectsPage!.MouseOverClickCreatedProject(projectName!);
-                await projectsPage!.ClickProjectMenu(projectName!);
-                await projectsPage!.ClickProjectDelete();
-                await projectsPage!.ClickConfirmDelete();
+                // await projectsPage!.MouseOverClickCreatedProject(projectName!);
+                // await projectsPage!.ClickProjectMenu(projectName!);
+                // await projectsPage!.ClickProjectDelete();
+                // await projectsPage!.ClickConfirmDelete();
+
+                await projectsPage!.HoverOverAndDeleteProjects(projectName!);
 
                 await page.CloseAsync();
             }

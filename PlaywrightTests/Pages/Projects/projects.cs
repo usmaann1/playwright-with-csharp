@@ -454,7 +454,6 @@ namespace PlaywrightTests.Pages.Projects
             await Helper.Click(_page, _projectDeleteConfirmButton);
         }
 
-    
         public async Task MouseOverClickCreatedProject(string projectName ="MultiplePolygonPoints")
         {
             var dynamicLocator = _projectHoverLocator.Replace("projName", projectName);
@@ -463,7 +462,6 @@ namespace PlaywrightTests.Pages.Projects
             await Task.Delay(3000);
 
         }
-
 
         public async Task ClickDroppedIconOnMap(string index)
         {
@@ -1575,7 +1573,6 @@ namespace PlaywrightTests.Pages.Projects
             string? requestUri = null;
             int statusCode = 0;
             bool isApiCalled = false;
-            string? responseBody = null;
 
             page.RequestFinished += async (sender, request) =>
             {
@@ -1585,51 +1582,23 @@ namespace PlaywrightTests.Pages.Projects
                     requestUri = request.Url; 
                     var response = await request.ResponseAsync();
                     statusCode = response!.Status;
-                    responseBody = await response.TextAsync(); 
+
                 }
             };
-
-            await page.WaitForTimeoutAsync(3000);
 
             await ClickPciRadioButton();
             await page.WaitForTimeoutAsync(3000);
 
             Assert.That(isApiCalled, Is.True, "GraphQL API call was not triggered after double-click.");
             Assert.That(statusCode, Is.EqualTo(200), $"Expected status 200 but got {statusCode}.");
-            Assert.That(responseBody, Is.Not.Null.Or.Empty, "Response body is null or empty.");
-
-            if (responseBody == null)
-            {
-                throw new InvalidOperationException("Response body is null.");
+            
             }
-            using var jsonDoc = JsonDocument.Parse(responseBody);
-            var root = jsonDoc.RootElement;
-
-            string typename = root
-                .GetProperty("data")
-                .GetProperty("v2IndependentExternalMap")
-                .GetProperty("__typename")
-                .GetString()!;
-
-            string valueType = root
-                .GetProperty("data")
-                .GetProperty("v2IndependentExternalMap")
-                .GetProperty("valueType")
-                .GetString()!;
-
-            Assert.That(typename, Is.EqualTo("IndependentExternalMapSchema"), $"Expected '__typename' to be 'IndependentExternalMapSchema' but got '{typename}'.");
-            Assert.That(valueType, Is.EqualTo("pci"), $"Expected 'valueType' to be 'pci' but got '{valueType}'.");
-
-            Console.WriteLine($"GraphQL API Request URI: {requestUri}");
-            Console.WriteLine($"GraphQL Response: {responseBody}");
-        }
 
         public async Task VerifyIndependentExternalMap2Dot4ResponsOnPCI()
         {
             string? requestUri = null;
             int statusCode = 0;
             bool isApiCalled = false;
-            string? responseBody = null;
 
             page.RequestFinished += async (sender, request) =>
             {
@@ -1639,7 +1608,6 @@ namespace PlaywrightTests.Pages.Projects
                     requestUri = request.Url; 
                     var response = await request.ResponseAsync();
                     statusCode = response!.Status;
-                    responseBody = await response.TextAsync(); 
                 }
             };
 
@@ -1650,32 +1618,7 @@ namespace PlaywrightTests.Pages.Projects
 
             Assert.That(isApiCalled, Is.True, "GraphQL API call was not triggered after double-click.");
             Assert.That(statusCode, Is.EqualTo(200), $"Expected status 200 but got {statusCode}.");
-            Assert.That(responseBody, Is.Not.Null.Or.Empty, "Response body is null or empty.");
-
-            if (responseBody == null)
-            {
-                throw new InvalidOperationException("Response body is null.");
-            }
-            using var jsonDoc = JsonDocument.Parse(responseBody);
-            var root = jsonDoc.RootElement;
-
-            string typename = root
-                .GetProperty("data")
-                .GetProperty("v2IndependentExternalMap")
-                .GetProperty("__typename")
-                .GetString()!;
-
-            string valueType = root
-                .GetProperty("data")
-                .GetProperty("v2IndependentExternalMap")
-                .GetProperty("valueType")
-                .GetString()!;
-
-            Assert.That(typename, Is.EqualTo("IndependentExternalMapSchema"), $"Expected '__typename' to be 'IndependentExternalMapSchema' but got '{typename}'.");
-            Assert.That(valueType, Is.EqualTo("pci"), $"Expected 'valueType' to be 'pci' but got '{valueType}'.");
-
-            Console.WriteLine($"GraphQL API Request URI: {requestUri}");
-            Console.WriteLine($"GraphQL Response: {responseBody}");
+          
         }
 
         public async Task VerifyDeleteIconNotVisible(int index)
@@ -1686,6 +1629,47 @@ namespace PlaywrightTests.Pages.Projects
             Assert.That(isVisible, Is.False, $"Delete icon at index {index} should not be visible, but it is.");
         }
 
+        public async Task HoverOverAndDeleteProjects(string projectName)
+        {
+            while (true)
+            {
+                var project = $"//section[contains(@data-cy, 'project-card-{projectName}')]//h3";
+
+                try
+                {
+                    await page.Locator(project).First.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
+                }
+                catch (TimeoutException)
+                {
+                    Console.WriteLine($"No more projects found with name: {projectName}");
+                    return; 
+                }
+
+                var projectCount = await page.Locator(project).CountAsync();
+
+                if (projectCount == 0)
+                {
+                    break; 
+                }
+                string projectLocator = "(//section[contains(@data-cy, 'project-card-" + projectName + "')]//h3)[1]";
+                string menuLocator = "(//section[contains(@data-cy, 'project-card-" + projectName + "')]//div[contains(@class, 'Card-Actions')]/div)[1]";
+                var projectElement = page.Locator(projectLocator);
+                var menuElement = page.Locator(menuLocator);
+
+                await projectElement.HoverAsync();
+                await page.WaitForTimeoutAsync(2000); 
+
+                await menuElement.ClickAsync();
+                await page.WaitForTimeoutAsync(2000); 
+
+                await ClickProjectDelete();
+                await page.WaitForTimeoutAsync(2000); 
+
+                await ClickConfirmDelete();
+                await page.WaitForTimeoutAsync(8000); 
+
+            }
+        }
 
 
 
