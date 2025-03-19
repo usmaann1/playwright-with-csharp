@@ -79,7 +79,7 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _createObstructionKebabBrickMenu = "(//div[@class='GroupItem-Suffix']//*[@stroke-linejoin='round'])[150]";
         private readonly string _antennasTab = "//button[text() = 'Antennas']";
         private readonly string _aPsTab = "//button[text() = 'APs']";
-        private readonly string _firstApRecordRow = "(//span[text() = '1'])[2]";
+        private readonly string _firstApRecordRow = "(//span[text() = '1'])[1]";
         private readonly string _antennaTypeDropDown = "(//div[@role='combobox'])[1]";
         private readonly string _antennaTypeDropDownSecondOption = "(//li[@role='option'])[2]";
         private readonly string _antennaMenuPanel = "//div[@data-popper-placement='bottom']";
@@ -182,6 +182,11 @@ namespace PlaywrightTests.Pages.Projects
         private readonly string _pciRadioButton ="//label/span[text()='PCI']";
         private readonly string _wifi2dot4GhzRadioButton ="//label/span[text()='WiFi 2.4GHz']";
         private readonly string _wifiButtonNavBar ="//span[contains(@class, 'iconSizeSmall ')]";
+        private string? requestUri;
+        private int statusCode;
+        private bool isApiCalled;
+        private string? responseBody;
+
 
         public async Task ClickNextButton()
         {
@@ -1671,13 +1676,53 @@ namespace PlaywrightTests.Pages.Projects
             }
         }
 
+        public void CaptureGraphQLRequestHeatMap(IPage page)
+        {
+            isApiCalled = false;
+            requestUri = null;
+            statusCode = 0;
+            responseBody = null;
 
+            page.Request += (sender, request) =>
+            {
+                if (request.Url.EndsWith("/pnp/graphql") && request.Method == "POST")
+                {
+                    var postData = request.PostData;
+                    if (!string.IsNullOrEmpty(postData) && postData.Contains("\"operationName\":\"getAggregateMap\""))
+                    {
+                        isApiCalled = true;
+                        requestUri = request.Url;
+                        Console.WriteLine($"Intercepted API with operation: getAggregateMap");
+                    }
+                }
+            };
 
+            page.RequestFinished += async (sender, request) =>
+            {
+                if (request.Url.EndsWith("/pnp/graphql") && isApiCalled)
+                {
+                    var response = await request.ResponseAsync();
+                    statusCode = response!.Status;
+                    responseBody = await response.TextAsync();
+                    Console.WriteLine($"GraphQL Response: {responseBody}");
+                }
+            };
+        }
 
+        public void VerifyAPIResponse()
+        {
+            Assert.That(isApiCalled, Is.True, "GraphQL API call was not triggered after double-click.");
+            Assert.That(statusCode, Is.EqualTo(200), $"Expected status 200 but got {statusCode}.");
+            Assert.That(responseBody, Is.Not.Null.Or.Empty, "Response body is null or empty.");
+
+          
+        }
     }
 
-
-
-
 }
+
+
+
+
+
 

@@ -55,8 +55,10 @@ namespace PlaywrightTests
             await projectsPage!.SelectApType("Outdoor");
             await projectsPage!.SelectApVendor("Aruba");
             await projectsPage!.ClickAddApButton();
+            projectsPage!.CaptureGraphQLRequestHeatMap(page!);
             await projectsPage!.DragAndDrop(120, 120);
             await projectsPage!.VerifyIconOnMap("1");
+            projectsPage!.VerifyAPIResponse();
 
             //Test 3: drag and drop Idf
             await projectsPage!.ClickIdfTab();
@@ -111,6 +113,7 @@ namespace PlaywrightTests
 
             //Test 6.3: Verify channel visibility
             await projectsPage!.ClickChannelsIconAsync();
+            await Task.Delay(5000);
             await projectsPage!.VerifyWifiIconChannelAsync(5, "38");
 
             //Test 6.4: Verify pins visibility
@@ -786,7 +789,6 @@ namespace PlaywrightTests
             await projectsPage!.VerifyDeleteIconNotVisible(1);            
            
         }
-
 
         [TearDown]
         public async Task TearDown()
